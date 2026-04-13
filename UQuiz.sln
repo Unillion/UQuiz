@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35312.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UQuiz", "UQuiz.csproj", "{1F595EF6-BACB-4F4B-A6A5-A0202BAB20EA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1F595EF6-BACB-4F4B-A6A5-A0202BAB20EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F595EF6-BACB-4F4B-A6A5-A0202BAB20EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F595EF6-BACB-4F4B-A6A5-A0202BAB20EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F595EF6-BACB-4F4B-A6A5-A0202BAB20EA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BFD2325D-C4A5-40D2-A9B3-24B71871B2B7}
+	EndGlobalSection
+EndGlobal
