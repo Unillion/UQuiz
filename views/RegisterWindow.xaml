@@ -6,8 +6,9 @@
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
-        WindowState="Maximized"
-        WindowStartupLocation="CenterScreen">
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        Height="1000" Width="1000">
 
     <Window.Resources>
         <!-- Конвертеры -->
@@ -184,26 +185,26 @@
 
                     <!-- Карточка с преимуществами -->
                     <Border Background="White" CornerRadius="16" Padding="25" 
-                            Effect="{StaticResource CardShadow}">
+                            >
                         <StackPanel>
                             <TextBlock Text="Возможности вашего аккаунта:" FontSize="14" 
                                        FontWeight="SemiBold" Foreground="#212121" Margin="0,0,0,15"/>
 
                             <StackPanel Margin="0,8,0,0">
-                                <TextBlock Text="📝 Учитель" FontWeight="SemiBold" Foreground="#3F51B5" Margin="0,0,0,5"/>
+                                <TextBlock Text="Учитель" FontWeight="SemiBold" Foreground="#3F51B5" Margin="0,0,0,5"/>
                                 <TextBlock Text="• Создание опросов любой сложности" FontSize="13" Foreground="#616161" Margin="10,0,0,3"/>
                                 <TextBlock Text="• Отправка ученикам и просмотр результатов" FontSize="13" Foreground="#616161" Margin="10,0,0,3"/>
                                 <TextBlock Text="• Глубокая аналитика с графиками" FontSize="13" Foreground="#616161" Margin="10,0,0,0"/>
                             </StackPanel>
 
                             <StackPanel Margin="0,15,0,0">
-                                <TextBlock Text="👨‍🎓 Ученик" FontWeight="SemiBold" Foreground="#FF9800" Margin="0,0,0,5"/>
+                                <TextBlock Text="Ученик" FontWeight="SemiBold" Foreground="#FF9800" Margin="0,0,0,5"/>
                                 <TextBlock Text="• Прохождение опросов от учителей" FontSize="13" Foreground="#616161" Margin="10,0,0,3"/>
                                 <TextBlock Text="• Просмотр своих результатов" FontSize="13" Foreground="#616161" Margin="10,0,0,0"/>
                             </StackPanel>
 
                             <StackPanel Margin="0,15,0,0">
-                                <TextBlock Text="🏢 Организация" FontWeight="SemiBold" Foreground="#009688" Margin="0,0,0,5"/>
+                                <TextBlock Text="Организация" FontWeight="SemiBold" Foreground="#009688" Margin="0,0,0,5"/>
                                 <TextBlock Text="• Просмотр аналитики по учителям" FontSize="13" Foreground="#616161" Margin="10,0,0,3"/>
                                 <TextBlock Text="• Статистика по опросам организации" FontSize="13" Foreground="#616161" Margin="10,0,0,0"/>
                             </StackPanel>
@@ -213,7 +214,7 @@
 
                 <!-- Правая сторона - форма регистрации -->
                 <Border Grid.Column="1" Background="White" CornerRadius="16" 
-                        Padding="35" Effect="{StaticResource CardShadow}">
+                        Padding="35">
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="Создание аккаунта" FontSize="24" FontWeight="SemiBold" 
                                    Foreground="#212121" Margin="0,0,0,8"/>
@@ -252,13 +253,13 @@
                         <WrapPanel Margin="0,0,0,15">
                             <RadioButton Content="Учитель" GroupName="Role"
                                          IsChecked="{Binding SelectedUserType, Converter={StaticResource UserTypeToBoolConverter}, ConverterParameter=Teacher}"
-                                         Style="{StaticResource RoleRadioButtonStyle}"/>
+                                         />
                             <RadioButton Content="Ученик" GroupName="Role"
                                          IsChecked="{Binding SelectedUserType, Converter={StaticResource UserTypeToBoolConverter}, ConverterParameter=RegularUser}"
-                                         Style="{StaticResource RoleRadioButtonStyle}"/>
+                                         />
                             <RadioButton Content="Организация" GroupName="Role"
                                          IsChecked="{Binding SelectedUserType, Converter={StaticResource UserTypeToBoolConverter}, ConverterParameter=Organization}"
-                                         Style="{StaticResource RoleRadioButtonStyle}"/>
+                                         />
                         </WrapPanel>
 
                         <!-- Сообщение об ошибке -->

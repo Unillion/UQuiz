@@ -22,9 +22,24 @@ namespace UQuiz.services
                         throw new Exception("Пользователь с таким Email уже существует");
 
                     string passwordHash = HashPassword(password);
-
-                    // Генерируем логин из email (всё что до @)
                     string login = email.Split('@')[0];
+
+                    // Преобразуем UserType в строку для БД
+                    string dbUserType;
+                    switch (userType)
+                    {
+                        case UserType.Teacher:
+                            dbUserType = "Teacher";
+                            break;
+                        case UserType.RegularUser:
+                            dbUserType = "Student";
+                            break;
+                        case UserType.Organization:
+                            dbUserType = "Organization";
+                            break;
+                        default:
+                            throw new Exception("Неизвестный тип пользователя");
+                    }
 
                     var userEntity = new UserEntity
                     {
@@ -32,7 +47,7 @@ namespace UQuiz.services
                         Email = email,
                         PasswordHash = passwordHash,
                         RegistrationDate = DateTime.Now,
-                        UserType = userType.ToString(),
+                        UserType = dbUserType,
                         FullName = fullNameOrOrgName
                     };
 
@@ -149,20 +164,17 @@ namespace UQuiz.services
         {
             User user = null;
 
-            if (Enum.TryParse<UserType>(entity.UserType, out var userType))
+            switch (entity.UserType)
             {
-                switch (userType)
-                {
-                    case UserType.Teacher:
-                        user = new Teacher();
-                        break;
-                    case UserType.RegularUser:
-                        user = new RegularUser();
-                        break;
-                    case UserType.Organization:
-                        user = new Organization();
-                        break;
-                }
+                case "Teacher":
+                    user = new Teacher();
+                    break;
+                case "Student":
+                    user = new RegularUser();
+                    break;
+                case "Organization":
+                    user = new Organization();
+                    break;
             }
 
             if (user != null)

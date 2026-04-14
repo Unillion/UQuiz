@@ -7,6 +7,7 @@ using UQuiz.models.enums;
 using UQuiz.services;
 using UQuiz.models.interfaces;
 using UQuiz.views;
+using UQuiz.Views;
 
 namespace UQuiz.ViewModels
 {
@@ -166,9 +167,9 @@ namespace UQuiz.ViewModels
             switch (user.UserType)
             {
                 case UserType.Teacher:
-                    MessageBox.Show("Открытие окна учителя", "Учитель", MessageBoxButton.OK, MessageBoxImage.Information);
-                    // var teacherWindow = new TeacherWindow(user);
-                    // teacherWindow.Show();
+                    var teacherWindow = new TeacherWindow((models.users.Teacher)user);
+                    teacherWindow.Show();
+                    currentWindow?.Close();
                     break;
                 case UserType.Organization:
                     MessageBox.Show("Открытие окна организации", "Организация", MessageBoxButton.OK, MessageBoxImage.Information);

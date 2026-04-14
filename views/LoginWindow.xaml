@@ -80,7 +80,7 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel VerticalAlignment="Center" Margin="0,0,40,0">
-                    <TextBlock Text="Создавай. Обучай. Анализируй." FontSize="28" FontWeight="Light" 
+                    <TextBlock Text="PLACEHOLDER" FontSize="28" FontWeight="Light" 
                                Foreground="#3F51B5" TextWrapping="Wrap"/>
                     <TextBlock Text="Платформа для опросов и глубокой аналитики успеваемости" 
                                FontSize="14" Foreground="#757575" Margin="0,15,0,0" TextWrapping="Wrap"/>
@@ -100,8 +100,7 @@
                     </Border>
                 </StackPanel>
 
-                <Border Grid.Column="1" Background="White" CornerRadius="12" Padding="30" 
-                        Effect="{StaticResource WindowShadow}">
+                <Border Grid.Column="1" Background="White" CornerRadius="12" Padding="30">
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="Добро пожаловать" FontSize="22" FontWeight="SemiBold" Foreground="#212121" Margin="0,0,0,5"/>
                         <TextBlock Text="Введите данные вашей учетной записи" FontSize="12" Foreground="#757575" Margin="0,0,0,30"/>

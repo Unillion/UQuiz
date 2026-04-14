@@ -1,0 +1,302 @@
+﻿<Window x:Class="UQuiz.Views.TeacherWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:converters="clr-namespace:UQuiz.converters"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowState="Maximized"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <!-- Конвертеры -->
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:MenuToBoolConverter x:Key="MenuToBoolConverter"/>
+
+        <!-- Цвета -->
+        <SolidColorBrush x:Key="PrimaryBrush" Color="#3F51B5"/>
+        <SolidColorBrush x:Key="SidebarBrush" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="BackgroundBrush" Color="#FAFAFA"/>
+        <SolidColorBrush x:Key="BorderBrush" Color="#E0E0E0"/>
+
+        <!-- Стиль для кнопок заголовка -->
+        <Style x:Key="HeaderButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Width" Value="46"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#32408F"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource HeaderButtonStyle}">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#E81123"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Стиль для кнопок меню -->
+        <Style x:Key="MenuButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#424242"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="16,0,0,0"/>
+            <Setter Property="Margin" Value="0,2"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#F0F0F0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ActiveMenuButtonStyle" TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
+            <Setter Property="Background" Value="#E8EAF6"/>
+            <Setter Property="Foreground" Value="#3F51B5"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <!-- Стиль для карточки опроса -->
+        <Style x:Key="SurveyCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="16"/>
+            <Setter Property="Margin" Value="0,0,12,12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderBrush" Value="#E0E0E0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="#3F51B5"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Шаблон для карточки опроса -->
+        <DataTemplate x:Key="SurveyCardTemplate">
+            <Border Width="260" Style="{StaticResource SurveyCardStyle}">
+                <StackPanel>
+                    <TextBlock Text="{Binding Title}" FontSize="15" FontWeight="SemiBold" 
+                               Foreground="#212121" Margin="0,0,0,6"/>
+                    <TextBlock Text="{Binding Description}" FontSize="12" 
+                               Foreground="#757575" Margin="0,0,0,12" TextWrapping="Wrap"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Вопросов:" Foreground="#9E9E9E" FontSize="11"/>
+                        <TextBlock Text="{Binding QuestionsCount}" Foreground="#3F51B5" FontSize="11" 
+                                   FontWeight="SemiBold" Margin="4,0,12,0"/>
+                        <TextBlock Text="Прошли:" Foreground="#9E9E9E" FontSize="11"/>
+                        <TextBlock Text="{Binding CompletedCount}" Foreground="#FF9800" FontSize="11" 
+                                   FontWeight="SemiBold" Margin="4,0,0,0"/>
+                    </StackPanel>
+                    <Border Height="1" Background="#EEEEEE" Margin="0,10"/>
+                    <TextBlock Text="{Binding CreatedDate, StringFormat='Создан: {0}'}" FontSize="10" 
+                               Foreground="#9E9E9E" HorizontalAlignment="Right"/>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+    </Window.Resources>
+
+    <Border Background="{StaticResource BackgroundBrush}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="32"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Заголовок окна -->
+            <Border Grid.Row="0" Background="{StaticResource PrimaryBrush}" 
+                    MouseLeftButtonDown="Border_MouseLeftButtonDown">
+                <Grid>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0">
+                        <TextBlock Text="UQuiz" Foreground="White" FontSize="13" FontWeight="Bold"/>
+                        <TextBlock Text="| Панель учителя" Foreground="#C5CAE9" FontSize="11" 
+                                   VerticalAlignment="Center" Margin="8,0,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="&#xE921;" Style="{StaticResource HeaderButtonStyle}"
+                                Command="{Binding MinimizeCommand}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
+                        <Button Content="&#xE922;" Style="{StaticResource HeaderButtonStyle}"
+                                Command="{Binding MaximizeCommand}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
+                        <Button Content="&#xE711;" Style="{StaticResource CloseButtonStyle}"
+                                Command="{Binding CloseCommand}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Основной контент -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="260"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Левая колонка - меню -->
+                <Border Background="{StaticResource SidebarBrush}" BorderBrush="#E0E0E0" BorderThickness="0,0,1,0">
+                    <StackPanel>
+                        <!-- Профиль -->
+                        <Border Padding="16" Margin="0,16,0,8">
+                            <StackPanel>
+                                <TextBlock Text="Учитель" FontSize="15" FontWeight="SemiBold" Foreground="#212121"/>
+                                <TextBlock Text="{Binding TeacherName}" FontSize="13" 
+                                           Foreground="#616161" Margin="0,4,0,0"/>
+                                <TextBlock Text="{Binding TeacherEmail}" FontSize="11" 
+                                           Foreground="#9E9E9E" Margin="0,2,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Height="1" Background="#E0E0E0" Margin="12,0"/>
+
+                        <!-- Меню -->
+                        <StackPanel Margin="12,16">
+                            <Button Content="Мои опросы" 
+                                    Command="{Binding NavigateCommand}" 
+                                    CommandParameter="Surveys">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedMenu}" Value="Surveys">
+                                                <Setter Property="Background" Value="#E8EAF6"/>
+                                                <Setter Property="Foreground" Value="#3F51B5"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                            <Button Content="Аналитика" 
+                                    Command="{Binding NavigateCommand}" 
+                                    CommandParameter="Analytics">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedMenu}" Value="Analytics">
+                                                <Setter Property="Background" Value="#E8EAF6"/>
+                                                <Setter Property="Foreground" Value="#3F51B5"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                            <Button Content="Ученики" 
+                                    Command="{Binding NavigateCommand}" 
+                                    CommandParameter="Students">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedMenu}" Value="Students">
+                                                <Setter Property="Background" Value="#E8EAF6"/>
+                                                <Setter Property="Foreground" Value="#3F51B5"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                            <Button Content="Организации" 
+                                    Command="{Binding NavigateCommand}" 
+                                    CommandParameter="Organizations">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedMenu}" Value="Organizations">
+                                                <Setter Property="Background" Value="#E8EAF6"/>
+                                                <Setter Property="Foreground" Value="#3F51B5"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </StackPanel>
+
+                        <Border Height="1" Background="#E0E0E0" Margin="12,8"/>
+
+                        <Button Content="Выйти" Style="{StaticResource MenuButtonStyle}" 
+                                Margin="12,16" 
+                                Command="{Binding LogoutCommand}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Правая колонка - контент -->
+                <Grid Grid.Column="1" Background="{StaticResource BackgroundBrush}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Заголовок и кнопка -->
+                    <Border Padding="24,20,24,16">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding PageTitle}" FontSize="20" 
+                                       FontWeight="SemiBold" Foreground="#212121" VerticalAlignment="Center"/>
+                            <Button Content="+ Создать опрос" 
+                                    Width="140" Height="36" Margin="16,0,0,0"
+                                    Background="#3F51B5" Foreground="White" BorderThickness="0" 
+                                    FontSize="13" Cursor="Hand" 
+                                    Command="{Binding CreateSurveyCommand}"
+                                    Visibility="{Binding IsCreateButtonVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="4"/>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Список опросов -->
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding Surveys}" 
+                                      ItemTemplate="{StaticResource SurveyCardTemplate}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Margin="24,0,24,24"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>
