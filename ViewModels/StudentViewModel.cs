@@ -20,6 +20,9 @@ namespace UQuiz.ViewModels
         private ObservableCollection<StudentSurveyCardViewModel> _completedSurveys;
         private ObservableCollection<StudentRequestViewModel> _pendingRequests;
         private ObservableCollection<TeacherItemViewModel> _myTeachers;
+        private string _studentClass;
+        private string _profileMessage;
+        private bool _isProfileLoading;
         public string FullName { get; }
 
 
@@ -47,6 +50,8 @@ namespace UQuiz.ViewModels
             RejectRequestCommand = new RelayCommand(ExecuteRejectRequest);
 
             MyTeachers = new ObservableCollection<TeacherItemViewModel>();
+            SaveProfileCommand = new RelayCommand(ExecuteSaveProfile, CanExecuteSaveProfile);
+            LoadProfileData();
 
 
             SelectedMenu = "Available";
@@ -76,6 +81,7 @@ namespace UQuiz.ViewModels
                     UpdatePageForMenu(value);
             }
         }
+        private bool CanExecuteSaveProfile(object parameter) => !IsProfileLoading;
 
         public ObservableCollection<StudentRequestViewModel> PendingRequests
         {
@@ -105,6 +111,25 @@ namespace UQuiz.ViewModels
             get => _selectedSurvey;
             set => SetProperty(ref _selectedSurvey, value);
         }
+        public string StudentClass
+        {
+            get => _studentClass;
+            set => SetProperty(ref _studentClass, value);
+        }
+
+        public string ProfileMessage
+        {
+            get => _profileMessage;
+            set => SetProperty(ref _profileMessage, value);
+        }
+
+        public bool IsProfileLoading
+        {
+            get => _isProfileLoading;
+            set => SetProperty(ref _isProfileLoading, value);
+        }
+
+        public ICommand SaveProfileCommand { get; }
 
         public ICommand NavigateCommand { get; }
         public ICommand LogoutCommand { get; }
@@ -176,6 +201,9 @@ namespace UQuiz.ViewModels
                     PageTitle = "Входящие заявки";
                     LoadPendingRequests();
                     break;
+                case "Profile":
+                    PageTitle = "Профиль";
+                    break;
             }
         }
 
@@ -226,6 +254,41 @@ namespace UQuiz.ViewModels
                     Email = t.Email,
                     Subject = t.Subject
                 });
+            }
+        }
+
+        private void ExecuteSaveProfile(object parameter)
+        {
+            IsProfileLoading = true;
+            ProfileMessage = string.Empty;
+
+            try
+            {
+                _userService.UpdateStudentProfile(_student.Id, StudentClass);
+                ProfileMessage = "Данные успешно сохранены!";
+                MessageBox.Show("Профиль обновлён", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                ProfileMessage = $"Ошибка: {ex.Message}";
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                IsProfileLoading = false;
+            }
+        }
+
+        private void LoadProfileData()
+        {
+            try
+            {
+                var profile = _userService.GetStudentProfile(_student.Id);
+                StudentClass = profile.Class;
+            }
+            catch
+            {
+                StudentClass = string.Empty;
             }
         }
 

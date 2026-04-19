@@ -171,6 +171,9 @@ namespace UQuiz.ViewModels
                               MessageBoxButton.OK,
                               MessageBoxImage.Information);
 
+                var loginWindow = new LoginWindow();
+                loginWindow.Show();
+
                 if (parameter is Window window)
                 {
                     window.Close();

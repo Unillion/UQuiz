@@ -673,5 +673,40 @@ namespace UQuiz.services
                 return teachers.ToList();
             }
         }
+        public StudentProfile GetStudentProfile(int studentId)
+        {
+            using (var context = new AppDbContext())
+            {
+                var user = context.Users.Find(studentId);
+                var student = context.Students.FirstOrDefault(s => s.UserId == studentId);
+
+                return new StudentProfile
+                {
+                    FullName = user?.FullName ?? string.Empty,
+                    Email = user?.Email ?? string.Empty,
+                    Class = student?.Class ?? string.Empty
+                };
+            }
+        }
+
+        public void UpdateStudentProfile(int studentId, string studentClass)
+        {
+            using (var context = new AppDbContext())
+            {
+                var student = context.Students.FirstOrDefault(s => s.UserId == studentId);
+                if (student != null)
+                {
+                    student.Class = studentClass;
+                    context.SaveChanges();
+                }
+            }
+        }
+
+        public class StudentProfile
+        {
+            public string FullName { get; set; }
+            public string Email { get; set; }
+            public string Class { get; set; }
+        }
     }
 }

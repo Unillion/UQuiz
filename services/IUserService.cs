@@ -42,6 +42,8 @@ namespace UQuiz.services
         void CancelStudentRequest(int requestId);
 
         List<TeacherInfo> GetTeachersByStudent(int studentId);
+        StudentProfile GetStudentProfile(int studentId);
+        void UpdateStudentProfile(int studentId, string studentClass);
     }
 
     public class TeacherInfo

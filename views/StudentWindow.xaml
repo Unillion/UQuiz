@@ -157,13 +157,13 @@
                 <Border Background="{StaticResource SidebarBrush}" BorderBrush="#E0E0E0" BorderThickness="0,0,1,0">
                     <StackPanel>
                         <Border Padding="16" Margin="0,16,0,8">
-                            <StackPanel>
-                                <TextBlock Text="Ученик" FontSize="15" FontWeight="SemiBold" Foreground="#212121"/>
-                                <TextBlock Text="{Binding FullName}" FontSize="13" 
-                                    Foreground="#616161" Margin="0,4,0,0"/>
-                                <TextBlock Text="{Binding StudentEmail}" FontSize="11" 
-                                    Foreground="#9E9E9E" Margin="0,2,0,0"/>
-                            </StackPanel>
+                            <Border Padding="16" Margin="0,16,0,8">
+                                <StackPanel>
+                                    <TextBlock Text="Ученик" FontSize="15" FontWeight="SemiBold" Foreground="#212121"/>
+                                    <TextBlock Text="{Binding FullName}" FontSize="13" Foreground="#616161" Margin="0,4,0,0"/>
+                                    <TextBlock Text="{Binding StudentEmail}" FontSize="11" Foreground="#9E9E9E" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Border>
                         </Border>
 
                         <Border Height="1" Background="#E0E0E0" Margin="12,0"/>
@@ -177,6 +177,8 @@
                                 Command="{Binding NavigateCommand}" CommandParameter="Teachers"/>
                             <Button Content="Заявки" Style="{StaticResource MenuButtonStyle}" 
                                 Command="{Binding NavigateCommand}" CommandParameter="Requests"/>
+                            <Button Content="Профиль" Style="{StaticResource MenuButtonStyle}" 
+                                Command="{Binding NavigateCommand}" CommandParameter="Profile"/>
                         </StackPanel>
 
                         <Border Height="1" Background="#E0E0E0" Margin="12,8"/>
@@ -283,6 +285,49 @@
                                     </ScrollViewer>
                                 </DataTemplate>
 
+                                <DataTemplate x:Key="Profile">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                        <Border Padding="24">
+                                            <StackPanel MaxWidth="500">
+                                                <TextBlock Text="Редактирование профиля" FontSize="18" FontWeight="SemiBold" 
+                           Foreground="#212121" Margin="0,0,0,20"/>
+
+                                                <TextBlock Text="ФИО" Foreground="#616161" FontSize="13" 
+                           FontWeight="SemiBold" Margin="0,0,0,6"/>
+                                                <TextBox Text="{Binding DataContext.FullName, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}, Mode=OneWay}" 
+                         Height="36" Padding="12,8" Margin="0,0,0,20"
+                         BorderBrush="#E0E0E0" BorderThickness="1" IsReadOnly="True" Background="#F5F5F5"/>
+
+                                                <TextBlock Text="Email" Foreground="#616161" FontSize="13" 
+                           FontWeight="SemiBold" Margin="0,0,0,6"/>
+                                                <TextBox Text="{Binding DataContext.StudentEmail, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}, Mode=OneWay}" 
+                         Height="36" Padding="12,8" Margin="0,0,0,20"
+                         BorderBrush="#E0E0E0" BorderThickness="1" IsReadOnly="True" Background="#F5F5F5"/>
+
+                                                <TextBlock Text="Класс / Группа" Foreground="#616161" FontSize="13" 
+                           FontWeight="SemiBold" Margin="0,0,0,6"/>
+                                                <TextBox Text="{Binding DataContext.StudentClass, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" 
+                         Height="36" Padding="12,8" Margin="0,0,0,20"
+                         BorderBrush="#E0E0E0" BorderThickness="1"/>
+
+                                                <TextBlock Text="{Binding DataContext.ProfileMessage, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" 
+                           Foreground="#4CAF50" FontSize="12" Margin="0,0,0,15"/>
+
+                                                <Button Content="Сохранить" Width="120" Height="40"
+                        Background="#FF9800" Foreground="White" BorderThickness="0" 
+                        FontWeight="SemiBold" Cursor="Hand"
+                        Command="{Binding DataContext.SaveProfileCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
+                                                    <Button.Resources>
+                                                        <Style TargetType="Border">
+                                                            <Setter Property="CornerRadius" Value="4"/>
+                                                        </Style>
+                                                    </Button.Resources>
+                                                </Button>
+                                            </StackPanel>
+                                        </Border>
+                                    </ScrollViewer>
+                                </DataTemplate>
+
                                 <DataTemplate x:Key="Teachers">
                                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                                         <StackPanel Margin="24">
@@ -328,6 +373,9 @@
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding SelectedMenu}" Value="Requests">
                                             <Setter Property="ContentTemplate" Value="{StaticResource Requests}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding SelectedMenu}" Value="Profile">
+                                            <Setter Property="ContentTemplate" Value="{StaticResource Profile}"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
