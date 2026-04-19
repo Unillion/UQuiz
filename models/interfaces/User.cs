@@ -15,6 +15,7 @@ namespace UQuiz.models.interfaces
         public string Password { get; set; }
         public DateTime RegistrationDate { get; set; }
         public abstract UserType UserType { get; }
+        public string FullName { get; set; }  // ← Добавьте эту строку
 
         protected User()
         {
@@ -36,7 +37,5 @@ namespace UQuiz.models.interfaces
                 );
             }
         }
-
-
     }
 }

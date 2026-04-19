@@ -82,14 +82,24 @@
     <Compile Include="data\entities\TeacherOrganizationEntity.cs" />
     <Compile Include="data\entities\TeacherStudentEntity.cs" />
     <Compile Include="data\entities\UserEntity.cs" />
+    <Compile Include="services\ISurveyService.cs" />
     <Compile Include="services\IUserService.cs" />
+    <Compile Include="services\SurveyService.cs" />
     <Compile Include="services\UserService.cs" />
     <Compile Include="ViewModels\Base\ViewModelBase.cs" />
+    <Compile Include="ViewModels\builder\OptionViewModel.cs" />
+    <Compile Include="ViewModels\builder\QuestionViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
+    <Compile Include="ViewModels\OrganizationViewModel.cs" />
     <Compile Include="ViewModels\RegisterViewModel.cs" />
+    <Compile Include="ViewModels\builder\SurveyBuilderViewModel.cs" />
+    <Compile Include="ViewModels\StudentViewModel.cs" />
     <Compile Include="ViewModels\TeacherViewModel.cs" />
     <Compile Include="views\LoginWindow.xaml.cs">
       <DependentUpon>LoginWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="views\OrganizationWindow.xaml.cs">
+      <DependentUpon>OrganizationWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="views\RegisterWindow.xaml.cs">
       <DependentUpon>RegisterWindow.xaml</DependentUpon>
@@ -101,6 +111,12 @@
     <Compile Include="commands\RelayCommand.cs" />
     <Compile Include="converters\StringToVisibilityConverter.cs" />
     <Compile Include="converters\UserTypeToBoolConverter.cs" />
+    <Compile Include="views\StudentWindow.xaml.cs">
+      <DependentUpon>StudentWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="views\SurveyBuilderWindow.xaml.cs">
+      <DependentUpon>SurveyBuilderWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="views\TeacherWindow.xaml.cs">
       <DependentUpon>TeacherWindow.xaml</DependentUpon>
     </Compile>
@@ -108,9 +124,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="views\OrganizationWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="views\RegisterWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="views\StudentWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="views\SurveyBuilderWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="views\TeacherWindow.xaml">
       <SubType>Designer</SubType>

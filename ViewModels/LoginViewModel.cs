@@ -8,6 +8,7 @@ using UQuiz.services;
 using UQuiz.models.interfaces;
 using UQuiz.views;
 using UQuiz.Views;
+using UQuiz.models.users;
 
 namespace UQuiz.ViewModels
 {
@@ -96,26 +97,11 @@ namespace UQuiz.ViewModels
             try
             {
                 var user = _userService.Login(Email, Password, SelectedUserType);
-
-                string userTypeText = GetUserTypeText(user.UserType);
-
-                MessageBox.Show($"Вход выполнен успешно!\n\n" +
-                              $"Тип: {userTypeText}\n" +
-                              $"Логин: {user.Login}\n" +
-                              $"Email: {user.Email}\n" +
-                              $"Дата регистрации: {user.RegistrationDate:dd.MM.yyyy}",
-                              "Успешный вход",
-                              MessageBoxButton.OK,
-                              MessageBoxImage.Information);
-
                 OpenMainWindow(user, parameter as Window);
             }
             catch (Exception ex)
             {
                 ErrorMessage = ex.Message;
-            }
-            finally
-            {
                 IsLoading = false;
             }
         }
@@ -123,7 +109,12 @@ namespace UQuiz.ViewModels
         private void ExecuteRegister(object parameter)
         {
             var registerWindow = new RegisterWindow();
-            registerWindow.ShowDialog();
+            registerWindow.Show();
+
+            if (parameter is Window currentWindow)
+            {
+                currentWindow.Close();
+            }
         }
 
         private void ExecuteMinimize(object parameter)
@@ -163,26 +154,21 @@ namespace UQuiz.ViewModels
 
         private void OpenMainWindow(User user, Window currentWindow)
         {
-            // Позже создадим разные окна для разных типов пользователей
             switch (user.UserType)
             {
                 case UserType.Teacher:
-                    var teacherWindow = new TeacherWindow((models.users.Teacher)user);
+                    var teacherWindow = new TeacherWindow((Teacher)user);
                     teacherWindow.Show();
-                    currentWindow?.Close();
                     break;
                 case UserType.Organization:
-                    MessageBox.Show("Открытие окна организации", "Организация", MessageBoxButton.OK, MessageBoxImage.Information);
-                    // var orgWindow = new OrganizationWindow(user);
-                    // orgWindow.Show();
+                    var orgWindow = new OrganizationWindow((Organization)user);
+                    orgWindow.Show();
                     break;
                 case UserType.RegularUser:
-                    MessageBox.Show("Открытие окна ученика", "Ученик", MessageBoxButton.OK, MessageBoxImage.Information);
-                    // var studentWindow = new StudentWindow(user);
-                    // studentWindow.Show();
+                    var studentWindow = new StudentWindow((RegularUser)user);
+                    studentWindow.Show();
                     break;
             }
-
             currentWindow?.Close();
         }
     }

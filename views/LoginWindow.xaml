@@ -129,7 +129,9 @@
                             Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"/>
 
                         <TextBlock TextAlignment="Center" Margin="0,20,0,0">
-                            <Hyperlink Command="{Binding RegisterCommand}">Нет аккаунта? Зарегистрироваться</Hyperlink>
+                            <Hyperlink Command="{Binding RegisterCommand}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
+                                Нет аккаунта? Зарегистрироваться</Hyperlink>
                         </TextBlock>
                     </StackPanel>
                 </Border>

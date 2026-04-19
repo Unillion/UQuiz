@@ -12,7 +12,7 @@ namespace UQuiz.data.entities
         public string Title { get; set; }
         public string Description { get; set; }
         public int TeacherId { get; set; }
-        public int OrganizationId { get; set; }
+        public int? OrganizationId { get; set; }
         public DateTime CreatedDate { get; set; }
         public bool IsActive { get; set; }
         public int? TimeLimit { get; set; }

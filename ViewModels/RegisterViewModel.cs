@@ -19,6 +19,8 @@ namespace UQuiz.ViewModels
         private string _errorMessage;
         private bool _isLoading;
 
+        public ICommand BackToLoginCommand { get; }
+
         public RegisterViewModel()
         {
             _userService = new UserService();
@@ -26,6 +28,18 @@ namespace UQuiz.ViewModels
             RegisterCommand = new RelayCommand(ExecuteRegister, CanExecuteRegister);
             CancelCommand = new RelayCommand(ExecuteCancel);
             SelectedUserType = UserType.Teacher;
+            BackToLoginCommand = new RelayCommand(ExecuteBackToLogin);
+        }
+
+        private void ExecuteBackToLogin(object parameter)
+        {
+            var loginWindow = new LoginWindow();
+            loginWindow.Show();
+
+            if (parameter is Window currentWindow)
+            {
+                currentWindow.Close();
+            }
         }
 
         public string FullNameOrOrgName

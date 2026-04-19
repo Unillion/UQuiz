@@ -268,11 +268,11 @@
 
                         <!-- Кнопки -->
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-                            <Button Content="Отмена" Width="100" Height="42" Margin="0,0,10,0"
-                                    Background="Transparent" Foreground="#757575" 
-                                    BorderBrush="#E0E0E0" BorderThickness="1" Cursor="Hand"
-                                    Command="{Binding CancelCommand}"
-                                    CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
+                            <Button Content="Назад к входу" Width="120" Height="42" Margin="0,0,10,0"
+                                Background="Transparent" Foreground="#757575" 
+                                BorderBrush="#E0E0E0" BorderThickness="1" Cursor="Hand"
+                                Command="{Binding BackToLoginCommand}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
                                 <Button.Resources>
                                     <Style TargetType="Border">
                                         <Setter Property="CornerRadius" Value="8"/>

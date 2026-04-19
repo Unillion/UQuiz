@@ -9,17 +9,14 @@
         WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
-        <!-- Конвертеры -->
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <converters:MenuToBoolConverter x:Key="MenuToBoolConverter"/>
 
-        <!-- Цвета -->
         <SolidColorBrush x:Key="PrimaryBrush" Color="#3F51B5"/>
         <SolidColorBrush x:Key="SidebarBrush" Color="#FFFFFF"/>
         <SolidColorBrush x:Key="BackgroundBrush" Color="#FAFAFA"/>
         <SolidColorBrush x:Key="BorderBrush" Color="#E0E0E0"/>
 
-        <!-- Стиль для кнопок заголовка -->
         <Style x:Key="HeaderButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -53,7 +50,6 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Стиль для кнопок меню -->
         <Style x:Key="MenuButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="#424242"/>
@@ -81,13 +77,6 @@
             </Setter>
         </Style>
 
-        <Style x:Key="ActiveMenuButtonStyle" TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
-            <Setter Property="Background" Value="#E8EAF6"/>
-            <Setter Property="Foreground" Value="#3F51B5"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-        </Style>
-
-        <!-- Стиль для карточки опроса -->
         <Style x:Key="SurveyCardStyle" TargetType="Border">
             <Setter Property="Background" Value="White"/>
             <Setter Property="CornerRadius" Value="8"/>
@@ -103,7 +92,6 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Шаблон для карточки опроса -->
         <DataTemplate x:Key="SurveyCardTemplate">
             <Border Width="260" Style="{StaticResource SurveyCardStyle}">
                 <StackPanel>
@@ -134,7 +122,6 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- Заголовок окна -->
             <Border Grid.Row="0" Background="{StaticResource PrimaryBrush}" 
                     MouseLeftButtonDown="Border_MouseLeftButtonDown">
                 <Grid>
@@ -158,17 +145,14 @@
                 </Grid>
             </Border>
 
-            <!-- Основной контент -->
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="260"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Левая колонка - меню -->
                 <Border Background="{StaticResource SidebarBrush}" BorderBrush="#E0E0E0" BorderThickness="0,0,1,0">
                     <StackPanel>
-                        <!-- Профиль -->
                         <Border Padding="16" Margin="0,16,0,8">
                             <StackPanel>
                                 <TextBlock Text="Учитель" FontSize="15" FontWeight="SemiBold" Foreground="#212121"/>
@@ -181,11 +165,8 @@
 
                         <Border Height="1" Background="#E0E0E0" Margin="12,0"/>
 
-                        <!-- Меню -->
                         <StackPanel Margin="12,16">
-                            <Button Content="Мои опросы" 
-                                    Command="{Binding NavigateCommand}" 
-                                    CommandParameter="Surveys">
+                            <Button Content="Мои опросы" Command="{Binding NavigateCommand}" CommandParameter="Surveys">
                                 <Button.Style>
                                     <Style TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
                                         <Style.Triggers>
@@ -198,10 +179,7 @@
                                     </Style>
                                 </Button.Style>
                             </Button>
-
-                            <Button Content="Аналитика" 
-                                    Command="{Binding NavigateCommand}" 
-                                    CommandParameter="Analytics">
+                            <Button Content="Аналитика" Command="{Binding NavigateCommand}" CommandParameter="Analytics">
                                 <Button.Style>
                                     <Style TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
                                         <Style.Triggers>
@@ -214,10 +192,7 @@
                                     </Style>
                                 </Button.Style>
                             </Button>
-
-                            <Button Content="Ученики" 
-                                    Command="{Binding NavigateCommand}" 
-                                    CommandParameter="Students">
+                            <Button Content="Ученики" Command="{Binding NavigateCommand}" CommandParameter="Students">
                                 <Button.Style>
                                     <Style TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
                                         <Style.Triggers>
@@ -230,10 +205,7 @@
                                     </Style>
                                 </Button.Style>
                             </Button>
-
-                            <Button Content="Организации" 
-                                    Command="{Binding NavigateCommand}" 
-                                    CommandParameter="Organizations">
+                            <Button Content="Организации" Command="{Binding NavigateCommand}" CommandParameter="Organizations">
                                 <Button.Style>
                                     <Style TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
                                         <Style.Triggers>
@@ -246,34 +218,42 @@
                                     </Style>
                                 </Button.Style>
                             </Button>
+                            <Button Content="Профиль" Command="{Binding NavigateCommand}" CommandParameter="Profile">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedMenu}" Value="Profile">
+                                                <Setter Property="Background" Value="#E8EAF6"/>
+                                                <Setter Property="Foreground" Value="#3F51B5"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
                         </StackPanel>
 
                         <Border Height="1" Background="#E0E0E0" Margin="12,8"/>
 
-                        <Button Content="Выйти" Style="{StaticResource MenuButtonStyle}" 
-                                Margin="12,16" 
+                        <Button Content="Выйти" Style="{StaticResource MenuButtonStyle}" Margin="12,16" 
                                 Command="{Binding LogoutCommand}"
                                 CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
                     </StackPanel>
                 </Border>
 
-                <!-- Правая колонка - контент -->
                 <Grid Grid.Column="1" Background="{StaticResource BackgroundBrush}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <!-- Заголовок и кнопка -->
                     <Border Padding="24,20,24,16">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{Binding PageTitle}" FontSize="20" 
                                        FontWeight="SemiBold" Foreground="#212121" VerticalAlignment="Center"/>
-                            <Button Content="+ Создать опрос" 
-                                    Width="140" Height="36" Margin="16,0,0,0"
+                            <Button Content="+ Создать опрос" Width="140" Height="36" Margin="16,0,0,0"
                                     Background="#3F51B5" Foreground="White" BorderThickness="0" 
-                                    FontSize="13" Cursor="Hand" 
-                                    Command="{Binding CreateSurveyCommand}"
+                                    FontSize="13" Cursor="Hand" Command="{Binding CreateSurveyCommand}"
                                     Visibility="{Binding IsCreateButtonVisible, Converter={StaticResource BoolToVisibilityConverter}}">
                                 <Button.Resources>
                                     <Style TargetType="Border">
@@ -284,17 +264,326 @@
                         </StackPanel>
                     </Border>
 
-                    <!-- Список опросов -->
-                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                        <ItemsControl ItemsSource="{Binding Surveys}" 
-                                      ItemTemplate="{StaticResource SurveyCardTemplate}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel Margin="24,0,24,24"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                        </ItemsControl>
-                    </ScrollViewer>
+                    <ContentControl Grid.Row="1" Content="{Binding SelectedMenu}">
+                        <ContentControl.Resources>
+                            <DataTemplate x:Key="Surveys">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <ItemsControl ItemsSource="{Binding DataContext.Surveys, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" 
+                                                  ItemTemplate="{StaticResource SurveyCardTemplate}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel Margin="24,0,24,24"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </DataTemplate>
+
+                            <DataTemplate x:Key="Analytics">
+                                <Border Padding="24">
+                                    <TextBlock Text="Аналитика в разработке" FontSize="16" Foreground="#757575"/>
+                                </Border>
+                            </DataTemplate>
+
+                            <DataTemplate x:Key="Students">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <Grid Margin="24">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+
+                                        <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Padding="16">
+                                            <StackPanel>
+                                                <TextBlock Text="Выберите организацию" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                                <ComboBox ItemsSource="{Binding DataContext.OrganizationsForRequest, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" 
+                                                          SelectedItem="{Binding DataContext.SelectedOrganizationForRequest, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                                                          DisplayMemberPath="Name" Height="36"/>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <Border Grid.Row="1" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,16,0,0">
+                                            <StackPanel>
+                                                <TextBlock Text="Поиск ученика по Email" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBox Text="{Binding DataContext.SearchStudentEmail, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" 
+                                                             Width="300" Height="36" Padding="10,8" Margin="0,0,10,0"
+                                                             BorderBrush="#E0E0E0" BorderThickness="1"/>
+                                                    <Button Content="Найти" Width="100" Height="36"
+                                                            Background="#3F51B5" Foreground="White" BorderThickness="0" Cursor="Hand"
+                                                            Command="{Binding DataContext.SearchStudentCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
+                                                        <Button.Resources>
+                                                            <Style TargetType="Border">
+                                                                <Setter Property="CornerRadius" Value="4"/>
+                                                            </Style>
+                                                        </Button.Resources>
+                                                    </Button>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" MaxHeight="200" Margin="0,16,0,0">
+                                            <ItemsControl ItemsSource="{Binding DataContext.StudentSearchResults, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
+                                                                Padding="16" Margin="0,0,0,10" Background="White">
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                    <ColumnDefinition Width="Auto"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <StackPanel>
+                                                                    <TextBlock Text="{Binding Name}" FontSize="15" FontWeight="SemiBold"/>
+                                                                    <TextBlock Text="{Binding Email}" FontSize="12" Foreground="#757575"/>
+                                                                    <TextBlock Text="{Binding Class, StringFormat='Класс: {0}'}" FontSize="12" Foreground="#3F51B5" Margin="0,4,0,0"/>
+                                                                </StackPanel>
+                                                                <Button Grid.Column="1" Content="Отправить заявку" Width="150" Height="36"
+                                                                        Background="#3F51B5" Foreground="White" BorderThickness="0" Cursor="Hand"
+                                                                        Command="{Binding DataContext.SendStudentRequestCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                                                                        CommandParameter="{Binding}">
+                                                                    <Button.Resources>
+                                                                        <Style TargetType="Border">
+                                                                            <Setter Property="CornerRadius" Value="4"/>
+                                                                        </Style>
+                                                                    </Button.Resources>
+                                                                </Button>
+                                                            </Grid>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </ScrollViewer>
+
+                                        <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" Margin="0,16,0,0">
+                                            <StackPanel>
+                                                <TextBlock Text="Все ученики в системе" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                                <ItemsControl ItemsSource="{Binding DataContext.AllStudents, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Border BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
+                                                                    Padding="16" Margin="0,0,12,12" Width="260" Background="White">
+                                                                <StackPanel>
+                                                                    <TextBlock Text="{Binding Name}" FontSize="15" FontWeight="SemiBold" Foreground="#212121"/>
+                                                                    <TextBlock Text="{Binding Email}" FontSize="12" Foreground="#757575" Margin="0,4,0,0"/>
+                                                                    <TextBlock Text="{Binding Class, StringFormat='Класс: {0}'}" FontSize="12" Foreground="#3F51B5" Margin="0,8,0,0"/>
+                                                                </StackPanel>
+                                                            </Border>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                    <ItemsControl.ItemsPanel>
+                                                        <ItemsPanelTemplate>
+                                                            <WrapPanel/>
+                                                        </ItemsPanelTemplate>
+                                                    </ItemsControl.ItemsPanel>
+                                                </ItemsControl>
+
+                                                <Border Height="1" Background="#E0E0E0" Margin="0,20"/>
+
+                                                <TextBlock Text="Мои ученики" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                                <ItemsControl ItemsSource="{Binding DataContext.MyStudents, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Border BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
+                                                                    Padding="16" Margin="0,0,12,12" Width="260" Background="White">
+                                                                <StackPanel>
+                                                                    <TextBlock Text="{Binding Name}" FontSize="15" FontWeight="SemiBold" Foreground="#212121"/>
+                                                                    <TextBlock Text="{Binding Email}" FontSize="12" Foreground="#757575" Margin="0,4,0,0"/>
+                                                                    <TextBlock Text="{Binding Class, StringFormat='Класс: {0}'}" FontSize="12" Foreground="#3F51B5" Margin="0,8,0,0"/>
+                                                                </StackPanel>
+                                                            </Border>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                    <ItemsControl.ItemsPanel>
+                                                        <ItemsPanelTemplate>
+                                                            <WrapPanel/>
+                                                        </ItemsPanelTemplate>
+                                                    </ItemsControl.ItemsPanel>
+                                                </ItemsControl>
+
+                                                <Border Height="1" Background="#E0E0E0" Margin="0,20"/>
+
+                                                <TextBlock Text="Отправленные заявки" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                                <ItemsControl ItemsSource="{Binding DataContext.SentStudentRequests, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Border BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
+                                                                    Padding="16" Margin="0,0,12,12" Width="300" Background="White">
+                                                                <Grid>
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="*"/>
+                                                                        <ColumnDefinition Width="Auto"/>
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <StackPanel>
+                                                                        <TextBlock Text="{Binding StudentName}" FontSize="15" FontWeight="SemiBold"/>
+                                                                        <TextBlock Text="{Binding StudentEmail}" FontSize="12" Foreground="#757575" Margin="0,4,0,0"/>
+                                                                        <TextBlock Text="{Binding OrganizationName, StringFormat='Организация: {0}'}" FontSize="12" Foreground="#3F51B5" Margin="0,8,0,0"/>
+                                                                        <TextBlock Text="{Binding StatusText, StringFormat='Статус: {0}'}" FontSize="12" Foreground="#FF9800" Margin="0,4,0,0"/>
+                                                                        <TextBlock Text="{Binding CreatedDate, StringFormat='Отправлена: {0}'}" FontSize="11" Foreground="#9E9E9E" Margin="0,8,0,0"/>
+                                                                    </StackPanel>
+                                                                    <Button Grid.Column="1" Content="Отменить" Width="80" Height="32"
+                                                                            Background="#E53935" Foreground="White" BorderThickness="0" Cursor="Hand"
+                                                                            Command="{Binding DataContext.CancelStudentRequestCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                                                                            CommandParameter="{Binding}"
+                                                                            Visibility="{Binding Status, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Pending}">
+                                                                        <Button.Resources>
+                                                                            <Style TargetType="Border">
+                                                                                <Setter Property="CornerRadius" Value="4"/>
+                                                                            </Style>
+                                                                        </Button.Resources>
+                                                                    </Button>
+                                                                </Grid>
+                                                            </Border>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                    <ItemsControl.ItemsPanel>
+                                                        <ItemsPanelTemplate>
+                                                            <WrapPanel/>
+                                                        </ItemsPanelTemplate>
+                                                    </ItemsControl.ItemsPanel>
+                                                </ItemsControl>
+                                            </StackPanel>
+                                        </ScrollViewer>
+                                    </Grid>
+                                </ScrollViewer>
+                            </DataTemplate>
+
+                            <DataTemplate x:Key="Organizations">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <StackPanel Margin="24">
+                                        <TextBlock Text="Входящие заявки" FontSize="18" FontWeight="SemiBold" 
+                                                   Foreground="#212121" Margin="0,0,0,15"
+                                                   Visibility="{Binding DataContext.PendingRequests.Count, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+                                        <ItemsControl ItemsSource="{Binding DataContext.PendingRequests, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
+                                                            Padding="16" Margin="0,0,0,10" Background="White">
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <StackPanel>
+                                                                <TextBlock Text="{Binding OrganizationName}" FontSize="15" FontWeight="SemiBold"/>
+                                                                <TextBlock Text="{Binding OrganizationEmail}" FontSize="12" Foreground="#757575" Margin="0,4,0,0"/>
+                                                                <TextBlock Text="{Binding CreatedDate, StringFormat='Заявка от: {0}'}" FontSize="11" 
+                                                                           Foreground="#9E9E9E" Margin="0,8,0,0"/>
+                                                            </StackPanel>
+                                                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                                                <Button Content="Принять" Width="80" Height="32" Margin="0,0,10,0"
+                                                                        Background="#4CAF50" Foreground="White" BorderThickness="0" Cursor="Hand"
+                                                                        Command="{Binding DataContext.AcceptRequestCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                                                                        CommandParameter="{Binding}">
+                                                                    <Button.Resources>
+                                                                        <Style TargetType="Border">
+                                                                            <Setter Property="CornerRadius" Value="4"/>
+                                                                        </Style>
+                                                                    </Button.Resources>
+                                                                </Button>
+                                                                <Button Content="Отклонить" Width="80" Height="32"
+                                                                        Background="#E53935" Foreground="White" BorderThickness="0" Cursor="Hand"
+                                                                        Command="{Binding DataContext.RejectRequestCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                                                                        CommandParameter="{Binding}">
+                                                                    <Button.Resources>
+                                                                        <Style TargetType="Border">
+                                                                            <Setter Property="CornerRadius" Value="4"/>
+                                                                        </Style>
+                                                                    </Button.Resources>
+                                                                </Button>
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+
+                                        <Border Height="1" Background="#E0E0E0" Margin="0,20"
+                                                Visibility="{Binding DataContext.PendingRequests.Count, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+                                        <TextBlock Text="Мои организации" FontSize="18" FontWeight="SemiBold" 
+                                                   Foreground="#212121" Margin="0,0,0,15"/>
+
+                                        <ItemsControl ItemsSource="{Binding DataContext.MyOrganizations, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
+                                                            Padding="16" Margin="0,0,12,12" Width="260" Background="White">
+                                                        <StackPanel>
+                                                            <TextBlock Text="{Binding Name}" FontSize="15" FontWeight="SemiBold" Foreground="#212121"/>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </DataTemplate>
+
+                            <DataTemplate x:Key="Profile">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <Border Padding="24">
+                                        <StackPanel MaxWidth="500">
+                                            <TextBlock Text="Редактирование профиля" FontSize="18" FontWeight="SemiBold" 
+                                                       Foreground="#212121" Margin="0,0,0,20"/>
+                                            <TextBlock Text="Номер телефона" Foreground="#616161" FontSize="13" 
+                                                       FontWeight="SemiBold" Margin="0,0,0,6"/>
+                                            <TextBox Text="{Binding DataContext.Phone, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" 
+                                                     Height="36" Padding="12,8" Margin="0,0,0,20"
+                                                     BorderBrush="#E0E0E0" BorderThickness="1"/>
+                                            <TextBlock Text="Предмет" Foreground="#616161" FontSize="13" 
+                                                       FontWeight="SemiBold" Margin="0,0,0,6"/>
+                                            <TextBox Text="{Binding DataContext.Subject, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" 
+                                                     Height="36" Padding="12,8" Margin="0,0,0,20"
+                                                     BorderBrush="#E0E0E0" BorderThickness="1"/>
+                                            <TextBlock Text="{Binding DataContext.ProfileMessage, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" 
+                                                       Foreground="#4CAF50" FontSize="12" Margin="0,0,0,15"/>
+                                            <Button Content="Сохранить" Width="120" Height="40"
+                                                    Background="#3F51B5" Foreground="White" BorderThickness="0" 
+                                                    FontWeight="SemiBold" Cursor="Hand"
+                                                    Command="{Binding DataContext.SaveProfileCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
+                                                <Button.Resources>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="CornerRadius" Value="4"/>
+                                                    </Style>
+                                                </Button.Resources>
+                                            </Button>
+                                        </StackPanel>
+                                    </Border>
+                                </ScrollViewer>
+                            </DataTemplate>
+                        </ContentControl.Resources>
+
+                        <ContentControl.Style>
+                            <Style TargetType="ContentControl">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedMenu}" Value="Surveys">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource Surveys}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding SelectedMenu}" Value="Analytics">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource Analytics}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding SelectedMenu}" Value="Students">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource Students}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding SelectedMenu}" Value="Organizations">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource Organizations}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding SelectedMenu}" Value="Profile">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource Profile}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ContentControl.Style>
+                    </ContentControl>
                 </Grid>
             </Grid>
         </Grid>
