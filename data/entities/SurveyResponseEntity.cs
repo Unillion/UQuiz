@@ -17,7 +17,7 @@ namespace UQuiz.data.entities
 
         public virtual SurveyEntity Survey { get; set; }
         public virtual StudentEntity Student { get; set; }
-        public virtual SurveyAssignmentEntity Assignment { get; set; }
+        //public virtual SurveyAssignmentEntity Assignment { get; set; }
         public virtual ICollection<AnswerEntity> Answers { get; set; }
     }
 }

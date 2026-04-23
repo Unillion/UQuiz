@@ -1,7 +1,9 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using UQuiz.models.users;
 using UQuiz.ViewModels;
+using static UQuiz.ViewModels.StudentViewModel;
 
 namespace UQuiz.views
 {
@@ -19,6 +21,17 @@ namespace UQuiz.views
                 WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
             else
                 DragMove();
+        }
+
+        private void SurveyCard_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Border border && border.Tag is StudentSurveyCardViewModel survey)
+            {
+                if (DataContext is StudentViewModel vm)
+                {
+                    vm.OpenSurveyCommand.Execute(survey);
+                }
+            }
         }
     }
 }

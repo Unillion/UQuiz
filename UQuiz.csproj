@@ -94,6 +94,8 @@
     <Compile Include="ViewModels\RegisterViewModel.cs" />
     <Compile Include="ViewModels\builder\SurveyBuilderViewModel.cs" />
     <Compile Include="ViewModels\StudentViewModel.cs" />
+    <Compile Include="ViewModels\SurveyManageViewModel.cs" />
+    <Compile Include="ViewModels\SurveyPassingViewModel.cs" />
     <Compile Include="ViewModels\TeacherViewModel.cs" />
     <Compile Include="views\LoginWindow.xaml.cs">
       <DependentUpon>LoginWindow.xaml</DependentUpon>
@@ -117,6 +119,12 @@
     <Compile Include="views\SurveyBuilderWindow.xaml.cs">
       <DependentUpon>SurveyBuilderWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="views\SurveyManageWindow.xaml.cs">
+      <DependentUpon>SurveyManageWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="views\SurveyPassingWindow.xaml.cs">
+      <DependentUpon>SurveyPassingWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="views\TeacherWindow.xaml.cs">
       <DependentUpon>TeacherWindow.xaml</DependentUpon>
     </Compile>
@@ -137,6 +145,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="views\SurveyBuilderWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="views\SurveyManageWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="views\SurveyPassingWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

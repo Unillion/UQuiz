@@ -15,6 +15,16 @@ namespace UQuiz.Views
             InitializeComponent();
             DataContext = new TeacherViewModel(teacher);
         }
+        private void SurveyCard_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Border border && border.Tag is SurveyCardViewModel survey)
+            {
+                if (DataContext is TeacherViewModel vm)
+                {
+                    vm.OpenSurveyCommand.Execute(survey);
+                }
+            }
+        }
 
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {

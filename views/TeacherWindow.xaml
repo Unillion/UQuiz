@@ -93,7 +93,8 @@
         </Style>
 
         <DataTemplate x:Key="SurveyCardTemplate">
-            <Border Width="260" Style="{StaticResource SurveyCardStyle}">
+            <Border Width="260" Style="{StaticResource SurveyCardStyle}" 
+                MouseLeftButtonUp="SurveyCard_MouseLeftButtonUp" Tag="{Binding}">
                 <StackPanel>
                     <TextBlock Text="{Binding Title}" FontSize="15" FontWeight="SemiBold" 
                                Foreground="#212121" Margin="0,0,0,6"/>

@@ -12,6 +12,9 @@ namespace UQuiz.services
         List<Survey> GetSurveysByTeacher(int teacherId);
         Survey GetSurveyById(int surveyId);
         void DeleteSurvey(int surveyId);
+        void AssignSurveyToStudents(int surveyId, List<int> studentIds);
+        List<Survey> GetAvailableSurveysForStudent(int studentId);
+        List<Survey> GetCompletedSurveysForStudent(int studentId);
     }
 
     public class SurveyData
@@ -50,5 +53,7 @@ namespace UQuiz.services
         public DateTime CreatedDate { get; set; }
         public bool IsActive { get; set; }
         public int QuestionsCount { get; set; }
+        public string TeacherName { get; set; }
+        public string Score { get; set; }
     }
 }

@@ -16,6 +16,6 @@ namespace UQuiz.data.entities
 
         public virtual SurveyEntity Survey { get; set; }
         public virtual StudentEntity Student { get; set; }
-        public virtual SurveyResponseEntity Response { get; set; }
+        //public virtual SurveyResponseEntity Response { get; set; }
     }
 }

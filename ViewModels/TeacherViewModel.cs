@@ -34,7 +34,7 @@ namespace UQuiz.ViewModels
         private OrganizationItemViewModel _selectedOrganizationForRequest;
         public ICommand AcceptRequestCommand { get; }
         public ICommand RejectRequestCommand { get; }
-
+        public ICommand OpenSurveyCommand { get; }
 
         public TeacherViewModel(Teacher teacher)
         {
@@ -65,6 +65,8 @@ namespace UQuiz.ViewModels
             SearchStudentCommand = new RelayCommand(ExecuteSearchStudent);
             SendStudentRequestCommand = new RelayCommand(ExecuteSendStudentRequest);
             CancelStudentRequestCommand = new RelayCommand(ExecuteCancelStudentRequest);
+            OpenSurveyCommand = new RelayCommand(ExecuteOpenSurvey);
+
 
 
             LoadProfileData();
@@ -352,6 +354,15 @@ namespace UQuiz.ViewModels
             }
         }
 
+        private void ExecuteOpenSurvey(object parameter)
+        {
+            if (parameter is SurveyCardViewModel survey)
+            {
+                var manageWindow = new SurveyManageWindow(_teacher, survey.Id, survey.Title);
+                manageWindow.Owner = Application.Current.MainWindow;
+                manageWindow.ShowDialog();
+            }
+        }
         private void LoadPendingRequests()
         {
             PendingRequests.Clear();
@@ -553,11 +564,18 @@ namespace UQuiz.ViewModels
         private string _name;
         private string _email;
         private string _class;
+        private bool _isSelected;
 
         public int Id { get => _id; set => SetProperty(ref _id, value); }
         public string Name { get => _name; set => SetProperty(ref _name, value); }
         public string Email { get => _email; set => SetProperty(ref _email, value); }
         public string Class { get => _class; set => SetProperty(ref _class, value); }
+
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set => SetProperty(ref _isSelected, value);
+        }
     }
 
     public class StudentRequestViewModel : ViewModelBase
@@ -619,6 +637,7 @@ namespace UQuiz.ViewModels
     public class SurveyCardViewModel : ViewModelBase
     {
         public int Id { get; set; }
+        public ICommand OpenSurveyCommand { get; set; }
         private string _title, _description, _completedCount, _createdDate;
         private int _questionsCount;
 

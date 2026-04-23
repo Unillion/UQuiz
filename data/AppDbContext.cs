@@ -454,9 +454,9 @@ namespace UQuiz.database
                 .HasForeignKey(e => e.StudentId)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<SurveyResponseEntity>()
-                .HasOptional(e => e.Assignment)
-                .WithOptionalPrincipal(a => a.Response);
+            //modelBuilder.Entity<SurveyResponseEntity>()
+            //    .HasOptional(e => e.Assignment)
+            //    .WithOptionalPrincipal(a => a.Response);
 
             // ========== AnswerEntity ==========
             modelBuilder.Entity<AnswerEntity>()

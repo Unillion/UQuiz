@@ -158,21 +158,20 @@ namespace UQuiz.ViewModels
             {
                 case UserType.Teacher:
                     var teacherWindow = new TeacherWindow((Teacher)user);
-                    currentWindow?.Close();
                     teacherWindow.Show();
+                    currentWindow?.Close();
                     break;
                 case UserType.Organization:
                     var orgWindow = new OrganizationWindow((Organization)user);
-                    currentWindow?.Close();
                     orgWindow.Show();
+                    currentWindow?.Close();
                     break;
                 case UserType.RegularUser:
                     var studentWindow = new StudentWindow((RegularUser)user);
-                    currentWindow?.Close();
                     studentWindow.Show();
+                    currentWindow?.Close();
                     break;
             }
-            currentWindow?.Close();
         }
     }
 }

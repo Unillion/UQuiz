@@ -376,6 +376,63 @@ namespace UQuiz.services
             }
         }
 
+        public SurveyDetail GetSurveyDetail(int surveyId)
+        {
+            using (var context = new AppDbContext())
+            {
+                var survey = context.Surveys.Find(surveyId);
+                if (survey == null) return null;
+
+                var questions = context.Questions
+                    .Where(q => q.SurveyId == surveyId)
+                    .OrderBy(q => q.OrderNumber)
+                    .ToList();
+
+                var detail = new SurveyDetail
+                {
+                    Id = survey.Id,
+                    Title = survey.Title,
+                    Description = survey.Description,
+                    Questions = new List<QuestionDetail>()
+                };
+
+                foreach (var q in questions)
+                {
+                    var questionDetail = new QuestionDetail
+                    {
+                        Id = q.Id,
+                        OrderNumber = q.OrderNumber,
+                        QuestionText = q.QuestionText,
+                        QuestionType = q.QuestionType,
+                        Points = q.Points,
+                        Options = new List<OptionDetail>()
+                    };
+
+                    if (q.QuestionType == "SingleChoice" || q.QuestionType == "MultipleChoice")
+                    {
+                        var options = context.AnswerOptions
+                            .Where(o => o.QuestionId == q.Id)
+                            .OrderBy(o => o.OrderNumber)
+                            .ToList();
+
+                        foreach (var o in options)
+                        {
+                            questionDetail.Options.Add(new OptionDetail
+                            {
+                                Id = o.Id,
+                                OptionText = o.OptionText,
+                                OrderNumber = o.OrderNumber
+                            });
+                        }
+                    }
+
+                    detail.Questions.Add(questionDetail);
+                }
+
+                return detail;
+            }
+        }
+
         public class OrganizationInfo
         {
             public int Id { get; set; }

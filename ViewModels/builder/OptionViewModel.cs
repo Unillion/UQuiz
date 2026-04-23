@@ -29,7 +29,11 @@ namespace UQuiz.ViewModels.builder
         public bool IsCorrect
         {
             get => _isCorrect;
-            set => SetProperty(ref _isCorrect, value);
+            set
+            {
+                _isCorrect = value;
+                OnPropertyChanged(nameof(IsCorrect));
+            }
         }
 
         public decimal Points

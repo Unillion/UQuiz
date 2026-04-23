@@ -6,6 +6,7 @@ using UQuiz.commands;
 using UQuiz.models.users;
 using UQuiz.services;
 using UQuiz.ViewModels.Base;
+using UQuiz.views;
 
 namespace UQuiz.ViewModels
 {
@@ -24,6 +25,8 @@ namespace UQuiz.ViewModels
         private string _profileMessage;
         private bool _isProfileLoading;
         public string FullName { get; }
+
+        public ICommand OpenSurveyCommand { get; }
 
 
         public StudentViewModel(RegularUser student)
@@ -51,6 +54,8 @@ namespace UQuiz.ViewModels
 
             MyTeachers = new ObservableCollection<TeacherItemViewModel>();
             SaveProfileCommand = new RelayCommand(ExecuteSaveProfile, CanExecuteSaveProfile);
+            OpenSurveyCommand = new RelayCommand(ExecuteOpenSurvey);
+
             LoadProfileData();
 
 
@@ -207,6 +212,44 @@ namespace UQuiz.ViewModels
             }
         }
 
+        private void LoadAvailableSurveys()
+        {
+            AvailableSurveys.Clear();
+            var surveys = _surveyService.GetAvailableSurveysForStudent(_student.Id);
+            foreach (var s in surveys)
+            {
+                AvailableSurveys.Add(new StudentSurveyCardViewModel
+                {
+                    Id = s.Id,
+                    Title = s.Title,
+                    Description = s.Description,
+                    QuestionsCount = s.QuestionsCount,
+                    CreatedDate = s.CreatedDate.ToString("dd.MM.yyyy"),
+                    TeacherName = s.TeacherName
+                });
+            }
+        }
+
+        private void LoadCompletedSurveys()
+        {
+            CompletedSurveys.Clear();
+            var surveys = _surveyService.GetCompletedSurveysForStudent(_student.Id);
+            foreach (var s in surveys)
+            {
+                CompletedSurveys.Add(new StudentSurveyCardViewModel
+                {
+                    Id = s.Id,
+                    Title = s.Title,
+                    Description = s.Description,
+                    QuestionsCount = s.QuestionsCount,
+                    CreatedDate = s.CreatedDate.ToString("dd.MM.yyyy"),
+                    TeacherName = s.TeacherName,
+                    Score = s.Score
+                });
+            }
+        }
+
+
         private void ExecuteAcceptRequest(object parameter)
         {
             if (parameter is StudentRequestViewModel request)
@@ -311,60 +354,38 @@ namespace UQuiz.ViewModels
 
         private void LoadSurveys()
         {
-            AvailableSurveys.Clear();
-            AvailableSurveys.Add(new StudentSurveyCardViewModel
-            {
-                Id = 1,
-                Title = "Математика 10 класс",
-                Description = "Контрольная работа по алгебре",
-                QuestionsCount = 15,
-                CreatedDate = "10.04.2026",
-                TeacherName = "Иванов И.И."
-            });
-            AvailableSurveys.Add(new StudentSurveyCardViewModel
-            {
-                Id = 2,
-                Title = "История России",
-                Description = "Тест по эпохе Петра I",
-                QuestionsCount = 20,
-                CreatedDate = "08.04.2026",
-                TeacherName = "Петрова А.С."
-            });
+            LoadAvailableSurveys();
+            LoadCompletedSurveys();
+        }
 
-            CompletedSurveys.Clear();
-            CompletedSurveys.Add(new StudentSurveyCardViewModel
+        private void ExecuteOpenSurvey(object parameter)
+        {
+            if (parameter is StudentSurveyCardViewModel survey)
             {
-                Id = 3,
-                Title = "Физика 9 класс",
-                Description = "Законы Ньютона",
-                QuestionsCount = 10,
-                CreatedDate = "05.04.2026",
-                TeacherName = "Сидоров В.П.",
-                Score = "8/10"
-                });
+                var passingWindow = new SurveyPassingWindow(survey.Id);
+                passingWindow.Owner = Application.Current.MainWindow;
+                passingWindow.ShowDialog();
+                LoadSurveys(); // Обновляем списки после прохождения
             }
         }
 
+        public class StudentSurveyCardViewModel : ViewModelBase
+        {
+            private int _id;
+            private string _title;
+            private string _description;
+            private int _questionsCount;
+            private string _createdDate;
+            private string _teacherName;
+            private string _score;
 
-    
-
-    public class StudentSurveyCardViewModel : ViewModelBase
-    {
-        private int _id;
-        private string _title;
-        private string _description;
-        private int _questionsCount;
-        private string _createdDate;
-        private string _teacherName;
-        private string _score;
-
-        public int Id { get => _id; set => SetProperty(ref _id, value); }
-        public string Title { get => _title; set => SetProperty(ref _title, value); }
-        public string Description { get => _description; set => SetProperty(ref _description, value); }
-        public int QuestionsCount { get => _questionsCount; set => SetProperty(ref _questionsCount, value); }
-        public string CreatedDate { get => _createdDate; set => SetProperty(ref _createdDate, value); }
-        public string TeacherName { get => _teacherName; set => SetProperty(ref _teacherName, value); }
-        public string Score { get => _score; set => SetProperty(ref _score, value); }
+            public int Id { get => _id; set => SetProperty(ref _id, value); }
+            public string Title { get => _title; set => SetProperty(ref _title, value); }
+            public string Description { get => _description; set => SetProperty(ref _description, value); }
+            public int QuestionsCount { get => _questionsCount; set => SetProperty(ref _questionsCount, value); }
+            public string CreatedDate { get => _createdDate; set => SetProperty(ref _createdDate, value); }
+            public string TeacherName { get => _teacherName; set => SetProperty(ref _teacherName, value); }
+            public string Score { get => _score; set => SetProperty(ref _score, value); }
+        }
     }
-   
 }
