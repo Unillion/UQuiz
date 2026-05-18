@@ -25,12 +25,13 @@ namespace UQuiz.ViewModels
         private readonly int _studentId;
         private readonly ISurveyService _surveyService;
 
-        public SurveyPassingViewModel(int surveyId)
+        public SurveyPassingViewModel(int surveyId, int studentId)
         {
+            _surveyId = surveyId;
+            _studentId = studentId;
             _startTime = DateTime.Now;
-
-            var surveyService = new SurveyService();
-            var surveyDetail = surveyService.GetSurveyDetail(surveyId);
+            _surveyService = new SurveyService();
+            var surveyDetail = _surveyService.GetSurveyDetail(surveyId);
 
 
             if (surveyDetail != null)
@@ -189,7 +190,7 @@ namespace UQuiz.ViewModels
                     answers.Add(answer);
                 }
 
-                //_surveyService.SubmitSurveyResponse(_surveyId, _studentId, answers);
+                _surveyService.SubmitSurveyResponse(_surveyId, _studentId, answers);
 
                 var answeredCount = Questions.Count(q => q.IsAnswered);
                 MessageBox.Show($"Опрос завершён!\nОтвечено: {answeredCount} из {Questions.Count}\nВремя: {(DateTime.Now - _startTime).TotalMinutes:F1} мин.",

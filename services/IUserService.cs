@@ -44,8 +44,6 @@ namespace UQuiz.services
         List<TeacherInfo> GetTeachersByStudent(int studentId);
         StudentProfile GetStudentProfile(int studentId);
         void UpdateStudentProfile(int studentId, string studentClass);
-        SurveyDetail GetSurveyDetail(int surveyId);
-        //void SubmitSurveyResponse(int surveyId, int studentId, List<AnswerData> answers);
     }
 
     public class TeacherInfo
@@ -91,36 +89,5 @@ namespace UQuiz.services
         public string OrganizationName { get; set; }
         public string Status { get; set; }
         public string CreatedDate { get; set; }
-    }
-
-    public class SurveyDetail
-    {
-        public int Id { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public List<QuestionDetail> Questions { get; set; }
-    }
-
-    public class QuestionDetail
-    {
-        public int Id { get; set; }
-        public int OrderNumber { get; set; }
-        public string QuestionText { get; set; }
-        public string QuestionType { get; set; }
-        public decimal Points { get; set; }
-        public List<OptionDetail> Options { get; set; }
-    }
-
-    public class OptionDetail
-    {
-        public int Id { get; set; }
-        public string OptionText { get; set; }
-        public int OrderNumber { get; set; }
-    }
-    public class AnswerData
-    {
-        public int QuestionId { get; set; }
-        public string TextAnswer { get; set; }
-        public List<int> SelectedOptionIds { get; set; }
     }
 }

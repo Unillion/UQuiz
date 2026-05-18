@@ -35,6 +35,9 @@ namespace UQuiz.ViewModels
         public ICommand AcceptRequestCommand { get; }
         public ICommand RejectRequestCommand { get; }
         public ICommand OpenSurveyCommand { get; }
+        public ICommand OpenAnalyticsCommand { get; }
+        private SurveyAnalytics _selectedSurveyAnalytics;
+        private TeacherAnalytics _teacherAnalytics;
 
         public TeacherViewModel(Teacher teacher)
         {
@@ -66,6 +69,8 @@ namespace UQuiz.ViewModels
             SendStudentRequestCommand = new RelayCommand(ExecuteSendStudentRequest);
             CancelStudentRequestCommand = new RelayCommand(ExecuteCancelStudentRequest);
             OpenSurveyCommand = new RelayCommand(ExecuteOpenSurvey);
+            OpenAnalyticsCommand = new RelayCommand(ExecuteOpenAnalytics);
+
 
 
 
@@ -191,7 +196,22 @@ namespace UQuiz.ViewModels
         {
             get => _myOrganizations;
         }
+        public SurveyAnalytics SelectedSurveyAnalytics
+        {
+            get => _selectedSurveyAnalytics;
+            set => SetProperty(ref _selectedSurveyAnalytics, value);
+        }
 
+        public TeacherAnalytics TeacherAnalytics
+        {
+            get => _teacherAnalytics;
+            set => SetProperty(ref _teacherAnalytics, value);
+        }
+
+        private void LoadAnalytics()
+        {
+            TeacherAnalytics = _surveyService.GetTeacherAnalytics(_teacher.Id);
+        }
         public OrganizationItemViewModel SelectedOrganizationForRequest
         {
             get => _selectedOrganizationForRequest;
@@ -205,35 +225,27 @@ namespace UQuiz.ViewModels
         private void LoadSurveys()
         {
             if (Surveys == null)
-            {
                 Surveys = new ObservableCollection<SurveyCardViewModel>();
-            }
             else
-            {
                 Surveys.Clear();
-            }
 
             var surveys = _surveyService.GetSurveysByTeacher(_teacher.Id);
 
-            // Отладка
-            System.Diagnostics.Debug.WriteLine($"Загружено опросов: {surveys.Count}");
-
             foreach (var s in surveys)
             {
-                System.Diagnostics.Debug.WriteLine($"Опрос: {s.Title}, Вопросов: {s.QuestionsCount}");
-
                 Surveys.Add(new SurveyCardViewModel
                 {
                     Id = s.Id,
                     Title = s.Title,
                     Description = s.Description,
                     QuestionsCount = s.QuestionsCount,
-                    CompletedCount = "0/0",
+                    AssignedCount = s.AssignedCount,
+                    CompletedCount = s.CompletedCount,
+                    CompletedCountDisplay = $"{s.CompletedCount}/{s.AssignedCount}",
                     CreatedDate = s.CreatedDate.ToString("dd.MM.yyyy")
                 });
             }
 
-            // Принудительно уведомляем об изменении
             OnPropertyChanged(nameof(Surveys));
         }
         private void ExecuteNavigate(object parameter)
@@ -305,6 +317,15 @@ namespace UQuiz.ViewModels
                 Application.Current.Shutdown();
         }
 
+        private void ExecuteOpenAnalytics(object parameter)
+        {
+            if (parameter is SurveyCardViewModel survey)
+            {
+                var analyticsWindow = new AnalyticsWindow(survey.Id);
+                analyticsWindow.Owner = Application.Current.MainWindow;
+                analyticsWindow.ShowDialog();
+            }
+        }
         private void LoadProfileData()
         {
             try
@@ -404,6 +425,7 @@ namespace UQuiz.ViewModels
                 case "Analytics":
                     PageTitle = "Аналитика";
                     IsCreateButtonVisible = false;
+                    LoadAnalytics();
                     break;
                 case "Students":
                     PageTitle = "Ученики";
@@ -427,15 +449,7 @@ namespace UQuiz.ViewModels
             }
         }
 
-        private void LoadTestSurveys()
-        {
-            Surveys = new ObservableCollection<SurveyCardViewModel>
-            {
-                new SurveyCardViewModel { Title = "Математика 10 класс", Description = "Контрольная работа по алгебре", QuestionsCount = 15, CompletedCount = "32/45", CreatedDate = "10.04.2026" },
-                new SurveyCardViewModel { Title = "История России", Description = "Тест по эпохе Петра I", QuestionsCount = 20, CompletedCount = "28/45", CreatedDate = "08.04.2026" },
-                new SurveyCardViewModel { Title = "Физика 9 класс", Description = "Законы Ньютона", QuestionsCount = 10, CompletedCount = "40/45", CreatedDate = "05.04.2026" }
-            };
-        }
+        
 
         private void ExecuteSearchStudent(object parameter)
         {
@@ -636,15 +650,22 @@ namespace UQuiz.ViewModels
     }
     public class SurveyCardViewModel : ViewModelBase
     {
-        public int Id { get; set; }
-        public ICommand OpenSurveyCommand { get; set; }
-        private string _title, _description, _completedCount, _createdDate;
+        private int _id;
+        private string _title;
+        private string _description;
         private int _questionsCount;
+        private string _completedCountDisplay;
+        private string _createdDate;
+        private int _assignedCount;
+        private int _completedCount;
 
+        public int Id { get => _id; set => SetProperty(ref _id, value); }
         public string Title { get => _title; set => SetProperty(ref _title, value); }
         public string Description { get => _description; set => SetProperty(ref _description, value); }
         public int QuestionsCount { get => _questionsCount; set => SetProperty(ref _questionsCount, value); }
-        public string CompletedCount { get => _completedCount; set => SetProperty(ref _completedCount, value); }
+        public string CompletedCountDisplay { get => _completedCountDisplay; set => SetProperty(ref _completedCountDisplay, value); }
         public string CreatedDate { get => _createdDate; set => SetProperty(ref _createdDate, value); }
+        public int AssignedCount { get => _assignedCount; set => SetProperty(ref _assignedCount, value); }
+        public int CompletedCount { get => _completedCount; set => SetProperty(ref _completedCount, value); }
     }
 }

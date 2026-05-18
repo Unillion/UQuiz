@@ -1,6 +1,8 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using UQuiz.models.users;
+using UQuiz.services;
 using UQuiz.ViewModels;
 
 namespace UQuiz.views
@@ -19,6 +21,17 @@ namespace UQuiz.views
                 WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
             else
                 DragMove();
+        }
+
+        private void ResponseItem_Click(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Border border && border.Tag is StudentResponseInfo response)
+            {
+                if (DataContext is SurveyManageViewModel vm)
+                {
+                    vm.ViewResponseCommand.Execute(response);
+                }
+            }
         }
     }
 }

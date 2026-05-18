@@ -6,10 +6,10 @@ namespace UQuiz.views
 {
     public partial class SurveyPassingWindow : Window
     {
-        public SurveyPassingWindow(int surveyId)
+        public SurveyPassingWindow(int surveyId, int studentId)
         {
             InitializeComponent();
-            DataContext = new SurveyPassingViewModel(surveyId);
+            DataContext = new SurveyPassingViewModel(surveyId, studentId);
         }
 
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

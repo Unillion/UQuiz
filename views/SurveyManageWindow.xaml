@@ -10,6 +10,7 @@
 
     <Window.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
 
         <SolidColorBrush x:Key="PrimaryBrush" Color="#3F51B5"/>
         <SolidColorBrush x:Key="SidebarBrush" Color="#FFFFFF"/>
@@ -227,9 +228,96 @@
                             </DataTemplate>
 
                             <DataTemplate x:Key="Check">
-                                <Border Padding="24">
-                                    <TextBlock Text="Проверка выполненных опросов в разработке" FontSize="16" Foreground="#757575"/>
-                                </Border>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="350"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Список учеников -->
+                                    <Border Grid.Column="0" BorderBrush="#E0E0E0" BorderThickness="0,0,1,0" Background="White">
+                                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                            <StackPanel>
+                                                <TextBlock Text="Ответы учеников" FontWeight="SemiBold" FontSize="16" Margin="15"/>
+                                                <ItemsControl ItemsSource="{Binding DataContext.StudentResponses, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Border BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="6" 
+                                        Padding="12" Margin="10,5" Background="#FAFAFA" Cursor="Hand"
+                                        MouseLeftButtonUp="ResponseItem_Click" Tag="{Binding}">
+                                                                <StackPanel>
+                                                                    <TextBlock Text="{Binding StudentName}" FontWeight="SemiBold" FontSize="14"/>
+                                                                    <TextBlock Text="{Binding StudentEmail}" FontSize="11" Foreground="#757575"/>
+                                                                    <TextBlock Text="{Binding StudentClass, StringFormat='Класс: {0}'}" FontSize="11" Foreground="#3F51B5"/>
+                                                                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                                                        <TextBlock Text="{Binding CompletedDate, StringFormat='Сдан: {0:dd.MM.yyyy HH:mm}'}" FontSize="11" Foreground="#9E9E9E"/>
+                                                                        <TextBlock Text="{Binding TotalScore, StringFormat='Баллы: {0}'}" FontSize="11" 
+                                                       Foreground="#4CAF50" FontWeight="SemiBold" Margin="10,0,0,0"/>
+                                                                    </StackPanel>
+                                                                </StackPanel>
+                                                            </Border>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </StackPanel>
+                                        </ScrollViewer>
+                                    </Border>
+
+                                    <!-- Детали ответа -->
+                                    <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+                                        <Border Padding="20">
+                                            <StackPanel>
+                                                <TextBlock Text="Выберите ученика для проверки" FontSize="16" Foreground="#757575"
+                               Visibility="{Binding DataContext.SelectedResponseDetail, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=Inverse}"/>
+
+                                                <TextBlock Text="{Binding DataContext.CheckMessage, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" 
+                               Foreground="#4CAF50" Margin="0,0,0,15"/>
+
+                                                <ItemsControl ItemsSource="{Binding DataContext.SelectedResponseDetail.Answers, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Border BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
+                                        Padding="15" Margin="0,0,0,10" Background="White">
+                                                                <StackPanel>
+                                                                    <TextBlock Text="{Binding QuestionText}" FontWeight="SemiBold" Margin="0,0,0,10" TextWrapping="Wrap"/>
+                                                                    <TextBlock Text="{Binding Points, StringFormat='Макс. балл: {0}'}" FontSize="12" Foreground="#FF9800"/>
+
+                                                                    <!-- Текстовый ответ -->
+                                                                    <Border Background="#F5F5F5" Padding="10" CornerRadius="4" Margin="0,8,0,0"
+                                                Visibility="{Binding StudentAnswer, Converter={StaticResource StringToVisibilityConverter}}">
+                                                                        <TextBlock Text="{Binding StudentAnswer}" TextWrapping="Wrap"/>
+                                                                    </Border>
+
+                                                                    <!-- Выбранные варианты -->
+                                                                    <ItemsControl ItemsSource="{Binding SelectedOptionTexts}" Margin="0,5,0,0">
+                                                                        <ItemsControl.ItemTemplate>
+                                                                            <DataTemplate>
+                                                                                <TextBlock Text="{Binding ., StringFormat='• {0}'}" FontSize="13" Margin="0,2"/>
+                                                                            </DataTemplate>
+                                                                        </ItemsControl.ItemTemplate>
+                                                                    </ItemsControl>
+
+                                                                    <!-- Оценка -->
+                                                                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                                                        <TextBlock Text="Баллы:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                                                        <TextBox Text="{Binding Score, UpdateSourceTrigger=PropertyChanged}" 
+                                                     Width="60" Height="28" Padding="5,4"
+                                                     BorderBrush="#E0E0E0" BorderThickness="1"/>
+                                                                        <TextBlock Text="{Binding Points, StringFormat=' / {0}'}" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                                                    </StackPanel>
+                                                                </StackPanel>
+                                                            </Border>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+
+                                                <Button Content="Сохранить оценки" Width="150" Height="40" Margin="0,20,0,0"
+                            Background="#4CAF50" Foreground="White" BorderThickness="0" FontWeight="SemiBold" Cursor="Hand"
+                            Command="{Binding DataContext.SaveScoreCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </ScrollViewer>
+                                </Grid>
                             </DataTemplate>
                         </ContentControl.Resources>
 

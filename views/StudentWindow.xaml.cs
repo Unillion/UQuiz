@@ -27,6 +27,9 @@ namespace UQuiz.views
         {
             if (sender is Border border && border.Tag is StudentSurveyCardViewModel survey)
             {
+                if (!string.IsNullOrEmpty(survey.Score))
+                    return;
+
                 if (DataContext is StudentViewModel vm)
                 {
                     vm.OpenSurveyCommand.Execute(survey);

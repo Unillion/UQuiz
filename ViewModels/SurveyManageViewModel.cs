@@ -24,6 +24,9 @@ namespace UQuiz.ViewModels
         private string _selectedClass;
         private bool _sendToAll;
         private string _message;
+        private ObservableCollection<StudentResponseInfo> _studentResponses;
+        private StudentResponseDetail _selectedResponseDetail;
+        private string _checkMessage;
 
         public SurveyManageViewModel(Teacher teacher, int surveyId, string surveyTitle)
         {
@@ -45,6 +48,10 @@ namespace UQuiz.ViewModels
             AttachedStudents = new ObservableCollection<StudentItemViewModel>();
             SelectedStudents = new ObservableCollection<StudentItemViewModel>();
             AvailableClasses = new ObservableCollection<string>();
+
+            StudentResponses = new ObservableCollection<StudentResponseInfo>();
+            ViewResponseCommand = new RelayCommand(ExecuteViewResponse);
+            SaveScoreCommand = new RelayCommand(ExecuteSaveScore, CanExecuteSaveScore);
 
             SelectedSection = "Send";
             LoadStudents();
@@ -80,6 +87,26 @@ namespace UQuiz.ViewModels
             set => SetProperty(ref _availableClasses, value);
         }
 
+        public ObservableCollection<StudentResponseInfo> StudentResponses
+        {
+            get => _studentResponses;
+            set => SetProperty(ref _studentResponses, value);
+        }
+
+        public StudentResponseDetail SelectedResponseDetail
+        {
+            get => _selectedResponseDetail;
+            set => SetProperty(ref _selectedResponseDetail, value);
+        }
+
+        public string CheckMessage
+        {
+            get => _checkMessage;
+            set => SetProperty(ref _checkMessage, value);
+        }
+
+        public ICommand ViewResponseCommand { get; }
+        public ICommand SaveScoreCommand { get; }
         public string SelectedClass
         {
             get => _selectedClass;
@@ -145,7 +172,6 @@ namespace UQuiz.ViewModels
         private void ExecuteSendSurvey(object parameter)
         {
             Message = string.Empty;
-
             try
             {
                 var studentIds = SendToAll
@@ -159,8 +185,7 @@ namespace UQuiz.ViewModels
                 }
 
                 _surveyService.AssignSurveyToStudents(_surveyId, studentIds);
-
-                Message = $"Опрос отправлен {studentIds.Count} ученикам!";
+                Message = $"Опрос отправлен!";
                 MessageBox.Show(Message, "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
@@ -223,6 +248,7 @@ namespace UQuiz.ViewModels
                 case "Send":
                     break;
                 case "Check":
+                    LoadStudentResponses();
                     break;
             }
         }
@@ -286,6 +312,59 @@ namespace UQuiz.ViewModels
                 {
                     SelectedStudents.Add(student);
                 }
+            }
+        }
+
+        private void ExecuteViewResponse(object parameter)
+        {
+            if (parameter is StudentResponseInfo response)
+            {
+                try
+                {
+                    SelectedResponseDetail = _surveyService.GetStudentResponseDetail(response.ResponseId);
+                    CheckMessage = string.Empty;
+                }
+                catch (Exception ex)
+                {
+                    CheckMessage = $"Ошибка загрузки: {ex.Message}";
+                }
+            }
+        }
+
+        private bool CanExecuteSaveScore(object parameter)
+        {
+            return SelectedResponseDetail != null;
+        }
+
+        private void ExecuteSaveScore(object parameter)
+        {
+            if (SelectedResponseDetail == null) return;
+
+            try
+            {
+                foreach (var answer in SelectedResponseDetail.Answers)
+                {
+                    _surveyService.UpdateAnswerScore(answer.AnswerId, answer.Score ?? 0, answer.CorrectAnswer);
+                }
+                _surveyService.UpdateResponseTotalScore(SelectedResponseDetail.ResponseId);
+
+                CheckMessage = "Оценки сохранены!";
+                LoadStudentResponses();
+                SelectedResponseDetail = _surveyService.GetStudentResponseDetail(SelectedResponseDetail.ResponseId);
+            }
+            catch (Exception ex)
+            {
+                CheckMessage = $"Ошибка сохранения: {ex.Message}";
+            }
+        }
+
+        private void LoadStudentResponses()
+        {
+            StudentResponses.Clear();
+            var responses = _surveyService.GetStudentResponses(_surveyId);
+            foreach (var r in responses)
+            {
+                StudentResponses.Add(r);
             }
         }
     }

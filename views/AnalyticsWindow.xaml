@@ -1,0 +1,110 @@
+﻿<Window x:Class="UQuiz.views.AnalyticsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="CanResize"
+        WindowStartupLocation="CenterScreen"
+        Height="700" Width="900">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="PrimaryBrush" Color="#3F51B5"/>
+        <SolidColorBrush x:Key="BackgroundBrush" Color="#FAFAFA"/>
+        <SolidColorBrush x:Key="BorderBrush" Color="#E0E0E0"/>
+        <DropShadowEffect x:Key="WindowShadow" BlurRadius="20" ShadowDepth="0" Opacity="0.25" Color="Black"/>
+
+        <Style x:Key="HeaderButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Width" Value="46"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#32408F"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Border Background="{StaticResource BackgroundBrush}" CornerRadius="8" Effect="{StaticResource WindowShadow}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="32"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0" Background="{StaticResource PrimaryBrush}" CornerRadius="8 8 0 0"
+                    MouseLeftButtonDown="Border_MouseLeftButtonDown">
+                <Grid>
+                    <TextBlock Foreground="White" FontSize="13" FontWeight="Bold"
+                               VerticalAlignment="Center" Margin="12,0,0,0">
+                        <Run Text="Аналитика: "/><Run Text="{Binding Analytics.Title}"/>
+                    </TextBlock>
+                </Grid>
+            </Border>
+
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="20">
+                    <WrapPanel Margin="0,0,0,20">
+                        <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
+                                Padding="20" Margin="0,0,15,15" Width="180">
+                            <StackPanel>
+                                <TextBlock Text="Прошли опрос" FontSize="12" Foreground="#757575"/>
+                                <TextBlock FontSize="28" FontWeight="Bold" Foreground="#3F51B5">
+                                    <Run Text="{Binding Analytics.CompletedCount}"/><Run Text=" / "/><Run Text="{Binding Analytics.TotalStudents}"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+                        <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
+                                Padding="20" Margin="0,0,15,15" Width="180">
+                            <StackPanel>
+                                <TextBlock Text="Средний балл" FontSize="12" Foreground="#757575"/>
+                                <TextBlock Text="{Binding Analytics.AverageScore, StringFormat=N1}" 
+                                           FontSize="28" FontWeight="Bold" Foreground="#4CAF50"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
+                                Padding="20" Margin="0,0,15,15" Width="180">
+                            <StackPanel>
+                                <TextBlock Text="Макс. балл" FontSize="12" Foreground="#757575"/>
+                                <TextBlock Text="{Binding Analytics.MaxScore, StringFormat=N0}" 
+                                           FontSize="28" FontWeight="Bold" Foreground="#FF9800"/>
+                            </StackPanel>
+                        </Border>
+                    </WrapPanel>
+
+                    <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
+                            Padding="15" Margin="0,0,0,20">
+                        <StackPanel>
+                            <TextBlock Text="Распределение оценок" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,10"/>
+                            <oxy:PlotView Model="{Binding ScoreDistributionModel}" Height="300"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
+                            Padding="15" Margin="0,0,0,20">
+                        <StackPanel>
+                            <TextBlock Text="Средний балл по вопросам" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,10"/>
+                            <oxy:PlotView Model="{Binding QuestionStatsModel}" Height="400"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Border>
+</Window>

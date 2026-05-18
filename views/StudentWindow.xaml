@@ -94,8 +94,21 @@
         </Style>
 
         <DataTemplate x:Key="StudentSurveyCardTemplate">
-            <Border Width="260" Style="{StaticResource SurveyCardStyle}" 
+            <Border Width="260" Margin="0,0,12,12" 
+            BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
+            Background="White" Padding="16"
             MouseLeftButtonUp="SurveyCard_MouseLeftButtonUp" Tag="{Binding}">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Cursor" Value="Hand"/>
+                        <Style.Triggers>
+                            <!-- Если есть результат (пройден) — курсор обычный, клик не сработает -->
+                            <DataTrigger Binding="{Binding Score, Converter={StaticResource StringToVisibilityConverter}}" Value="Visible">
+                                <Setter Property="Cursor" Value="Arrow"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
                 <StackPanel>
                     <TextBlock Text="{Binding Title}" FontSize="15" FontWeight="SemiBold" 
                        Foreground="#212121" Margin="0,0,0,6"/>
@@ -198,8 +211,8 @@
                     </Grid.RowDefinitions>
 
                     <Border Padding="24,20,24,16">
-                        <TextBlock x:Name="TxtPageTitle" Text="Доступные опросы" FontSize="20" 
-                                   FontWeight="SemiBold" Foreground="#212121"/>
+                        <TextBlock Text="{Binding PageTitle}" FontSize="20" 
+                            FontWeight="SemiBold" Foreground="#212121"/>
                     </Border>
 
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">

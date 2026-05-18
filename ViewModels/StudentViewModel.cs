@@ -38,6 +38,8 @@ namespace UQuiz.ViewModels
             FullName = student.FullName;
             StudentEmail = student.Email;
 
+            SelectedMenu = "Available";
+
             NavigateCommand = new RelayCommand(ExecuteNavigate);
             LogoutCommand = new RelayCommand(ExecuteLogout);
             StartSurveyCommand = new RelayCommand(ExecuteStartSurvey);
@@ -57,9 +59,6 @@ namespace UQuiz.ViewModels
             OpenSurveyCommand = new RelayCommand(ExecuteOpenSurvey);
 
             LoadProfileData();
-
-
-            SelectedMenu = "Available";
             LoadSurveys();
         }
 
@@ -362,10 +361,10 @@ namespace UQuiz.ViewModels
         {
             if (parameter is StudentSurveyCardViewModel survey)
             {
-                var passingWindow = new SurveyPassingWindow(survey.Id);
+                var passingWindow = new SurveyPassingWindow(survey.Id, _student.Id);
                 passingWindow.Owner = Application.Current.MainWindow;
                 passingWindow.ShowDialog();
-                LoadSurveys(); // Обновляем списки после прохождения
+                LoadSurveys();
             }
         }
 
