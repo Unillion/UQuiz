@@ -167,6 +167,8 @@ namespace UQuiz.ViewModels
 
                     foreach (var opt in q.Options)
                     {
+                        System.Diagnostics.Debug.WriteLine($"Отправляю в SaveSurvey: {opt.OptionText}, IsCorrect={opt.IsCorrect}");
+
                         questionData.Options.Add(new OptionData
                         {
                             OrderNumber = opt.OrderNumber,

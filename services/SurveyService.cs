@@ -47,6 +47,8 @@ namespace UQuiz.services
                         {
                             foreach (var opt in q.Options)
                             {
+                                System.Diagnostics.Debug.WriteLine($"Сохраняю: {opt.OptionText}, IsCorrect={opt.IsCorrect}");
+
                                 var optionEntity = new AnswerOptionEntity
                                 {
                                     QuestionId = questionEntity.Id,

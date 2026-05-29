@@ -191,23 +191,21 @@
                                                                 <ContentControl.Style>
                                                                     <Style TargetType="ContentControl">
                                                                         <Style.Triggers>
-                                                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}, Path=DataContext.IsSingleChoice}" Value="True">
+                                                                            <DataTrigger Binding="{Binding DataContext.IsSingleChoice, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True">
                                                                                 <Setter Property="ContentTemplate">
                                                                                     <Setter.Value>
                                                                                         <DataTemplate>
-                                                                                            <RadioButton 
-                                    IsChecked="{Binding DataContext.IsCorrect, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}}"
-                                    GroupName="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}, Path=DataContext.OrderNumber}"/>
+                                                                                            <RadioButton IsChecked="{Binding DataContext.IsCorrect, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}}"
+                                             GroupName="{Binding DataContext.OrderNumber, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}"/>
                                                                                         </DataTemplate>
                                                                                     </Setter.Value>
                                                                                 </Setter>
                                                                             </DataTrigger>
-                                                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}, Path=DataContext.IsMultipleChoice}" Value="True">
+                                                                            <DataTrigger Binding="{Binding DataContext.IsMultipleChoice, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True">
                                                                                 <Setter Property="ContentTemplate">
                                                                                     <Setter.Value>
                                                                                         <DataTemplate>
-                                                                                            <CheckBox 
-                                    IsChecked="{Binding DataContext.IsCorrect, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}}"/>
+                                                                                            <CheckBox IsChecked="{Binding DataContext.IsCorrect, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}}"/>
                                                                                         </DataTemplate>
                                                                                     </Setter.Value>
                                                                                 </Setter>
@@ -224,7 +222,7 @@
                                                             <TextBox Grid.Column="2" Text="{Binding Points, UpdateSourceTrigger=PropertyChanged}" 
                          Width="60" Height="28" Padding="5,4" Margin="10,0,0,0"
                          BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
-                         Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}, Path=DataContext.IsMultipleChoice, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                         Visibility="{Binding DataContext.IsMultipleChoice, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
                                                             <Button Grid.Column="3" Content="✕" Background="Transparent" BorderThickness="0" 
                         Foreground="#E53935" Cursor="Hand" Margin="10,0,0,0"
