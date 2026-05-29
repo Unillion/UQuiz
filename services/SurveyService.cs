@@ -103,7 +103,7 @@ namespace UQuiz.services
         {
             using (var context = new AppDbContext())
             {
-                // Проверяем, не отправлял ли уже ученик этот опрос
+                // Проверка на повторную отправку
                 var existingResponse = context.SurveyResponses
                     .Any(sr => sr.SurveyId == surveyId && sr.StudentId == studentId);
 
@@ -121,35 +121,113 @@ namespace UQuiz.services
                 context.SurveyResponses.Add(response);
                 context.SaveChanges();
 
-                // Сохраняем ответы
+                decimal totalScore = 0;
+
                 foreach (var answer in answers)
                 {
+                    // Получаем вопрос
+                    var question = context.Questions.Find(answer.QuestionId);
+                    if (question == null) continue;
+
+                    // Создаём ответ
                     var answerEntity = new AnswerEntity
                     {
                         ResponseId = response.Id,
                         QuestionId = answer.QuestionId,
-                        AnswerText = answer.TextAnswer
+                        AnswerText = answer.TextAnswer ?? ""
                     };
+
+                    // АВТОПРОВЕРКА
+                    if (question.QuestionType == "SingleChoice" || question.QuestionType == "MultipleChoice")
+                    {
+                        // Загружаем ВСЕ варианты для этого вопроса
+                        var allOptions = context.AnswerOptions
+                            .Where(o => o.QuestionId == question.Id)
+                            .ToList();
+
+                        // Находим правильные
+                        var correctOptionIds = allOptions
+                            .Where(o => o.IsCorrect)
+                            .Select(o => o.Id)
+                            .ToList();
+
+                        // Выбранные учеником
+                        var selectedOptionIds = answer.SelectedOptionIds ?? new List<int>();
+
+                        // ОТЛАДКА
+                        System.Diagnostics.Debug.WriteLine($"=== Вопрос {question.Id}: {question.QuestionText} ===");
+                        System.Diagnostics.Debug.WriteLine($"Тип: {question.QuestionType}, Баллы: {question.Points}");
+                        System.Diagnostics.Debug.WriteLine($"Всего вариантов: {allOptions.Count}");
+                        foreach (var opt in allOptions)
+                            System.Diagnostics.Debug.WriteLine($"  Option {opt.Id}: '{opt.OptionText}' IsCorrect={opt.IsCorrect}");
+                        System.Diagnostics.Debug.WriteLine($"Правильных ID: [{string.Join(",", correctOptionIds)}]");
+                        System.Diagnostics.Debug.WriteLine($"Выбрано ID: [{string.Join(",", selectedOptionIds)}]");
+
+                        // Вычисляем баллы
+                        decimal score = 0;
+
+                        if (question.QuestionType == "SingleChoice")
+                        {
+                            if (selectedOptionIds.Count == 1 && correctOptionIds.Contains(selectedOptionIds[0]))
+                            {
+                                score = question.Points;
+                                System.Diagnostics.Debug.WriteLine($"SingleChoice: ПРАВИЛЬНО! Баллы: {score}");
+                            }
+                            else
+                            {
+                                System.Diagnostics.Debug.WriteLine($"SingleChoice: НЕПРАВИЛЬНО. Баллы: 0");
+                            }
+                        }
+                        else if (question.QuestionType == "MultipleChoice")
+                        {
+                            bool allCorrectSelected = correctOptionIds.Count > 0 &&
+                                                      correctOptionIds.All(c => selectedOptionIds.Contains(c));
+                            bool noIncorrectSelected = selectedOptionIds.All(s => correctOptionIds.Contains(s));
+
+                            if (allCorrectSelected && noIncorrectSelected)
+                            {
+                                score = question.Points;
+                                System.Diagnostics.Debug.WriteLine($"MultipleChoice: ВСЁ ПРАВИЛЬНО! Баллы: {score}");
+                            }
+                            else if (selectedOptionIds.Any(s => correctOptionIds.Contains(s)))
+                            {
+                                score = question.Points / 2;
+                                System.Diagnostics.Debug.WriteLine($"MultipleChoice: ЧАСТИЧНО ПРАВИЛЬНО. Баллы: {score}");
+                            }
+                            else
+                            {
+                                System.Diagnostics.Debug.WriteLine($"MultipleChoice: НЕПРАВИЛЬНО. Баллы: 0");
+                            }
+                        }
+
+                        answerEntity.Score = score;
+                        totalScore += score;
+                    }
+                    // Текстовые вопросы — без автопроверки
+
                     context.Answers.Add(answerEntity);
                     context.SaveChanges();
 
                     // Сохраняем выбранные варианты
-                    if (answer.SelectedOptionIds != null)
+                    if (answer.SelectedOptionIds != null && answer.SelectedOptionIds.Count > 0)
                     {
                         foreach (var optionId in answer.SelectedOptionIds)
                         {
-                            var choice = new AnswerChoiceEntity
+                            context.AnswerChoices.Add(new AnswerChoiceEntity
                             {
                                 AnswerId = answerEntity.Id,
                                 OptionId = optionId
-                            };
-                            context.AnswerChoices.Add(choice);
+                            });
                         }
                         context.SaveChanges();
                     }
                 }
 
-                // Помечаем назначение как выполненное
+                // Сохраняем общий балл
+                response.TotalScore = totalScore;
+                context.SaveChanges();
+
+                // Помечаем как выполненное
                 var assignment = context.SurveyAssignments
                     .FirstOrDefault(sa => sa.SurveyId == surveyId && sa.StudentId == studentId);
                 if (assignment != null)
@@ -157,6 +235,8 @@ namespace UQuiz.services
                     assignment.IsCompleted = true;
                     context.SaveChanges();
                 }
+
+                System.Diagnostics.Debug.WriteLine($"=== ИТОГО: {totalScore} баллов ===");
             }
         }
 
@@ -418,41 +498,50 @@ namespace UQuiz.services
         {
             using (var context = new AppDbContext())
             {
-                var response = context.SurveyResponses
-                    .Include("Survey")
-                    .Include("Answers.Question")
-                    .Include("Answers.Choices.Option")
-                    .FirstOrDefault(r => r.Id == responseId);
-
+                var response = context.SurveyResponses.Find(responseId);
                 if (response == null) return null;
 
                 var student = context.Users.Find(response.StudentId);
+                var survey = context.Surveys.Find(response.SurveyId);
+                var answers = context.Answers.Where(a => a.ResponseId == responseId).ToList();
 
                 var detail = new StudentResponseDetail
                 {
                     ResponseId = response.Id,
                     StudentId = response.StudentId,
                     StudentName = student?.FullName ?? student?.Login,
-                    SurveyTitle = response.Survey?.Title,
+                    SurveyTitle = survey?.Title,
                     Answers = new List<AnswerDetail>()
                 };
 
-                foreach (var answer in response.Answers)
+                foreach (var answer in answers)
                 {
-                    var answerDetail = new AnswerDetail
+                    var question = context.Questions.Find(answer.QuestionId);
+                    var choices = context.AnswerChoices
+                        .Where(c => c.AnswerId == answer.Id)
+                        .Select(c => c.Option.OptionText)
+                        .ToList();
+
+                    var correctOptions = context.AnswerOptions
+                        .Where(o => o.QuestionId == question.Id && o.IsCorrect)
+                        .Select(o => o.OptionText)
+                        .ToList();
+
+                    detail.Answers.Add(new AnswerDetail
                     {
                         AnswerId = answer.Id,
                         QuestionId = answer.QuestionId,
-                        QuestionText = answer.Question?.QuestionText,
-                        QuestionType = answer.Question?.QuestionType,
-                        Points = answer.Question?.Points ?? 0,
+                        QuestionText = question?.QuestionText,
+                        QuestionType = question?.QuestionType,
+                        Points = question?.Points ?? 0,
                         StudentAnswer = answer.AnswerText,
-                        Score = answer.Score,
-                        CorrectAnswer = answer.Question?.CorrectAnswer,
                         SelectedOptionIds = answer.Choices?.Select(c => c.OptionId).ToList(),
-                        SelectedOptionTexts = answer.Choices?.Select(c => c.Option?.OptionText).ToList()
-                    };
-                    detail.Answers.Add(answerDetail);
+                        SelectedOptionTexts = choices,
+                        CorrectOptionTexts = correctOptions,
+                        Score = answer.Score,
+                        CorrectAnswer = question?.CorrectAnswer,
+                        IsAutoChecked = question?.QuestionType == "SingleChoice" || question?.QuestionType == "MultipleChoice"
+                    });
                 }
 
                 return detail;

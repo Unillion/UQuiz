@@ -195,8 +195,9 @@
                                                                                 <Setter Property="ContentTemplate">
                                                                                     <Setter.Value>
                                                                                         <DataTemplate>
-                                                                                            <RadioButton IsChecked="{Binding IsCorrect}"
-                                             GroupName="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}, Path=DataContext.OrderNumber}"/>
+                                                                                            <RadioButton 
+                                    IsChecked="{Binding DataContext.IsCorrect, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}}"
+                                    GroupName="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}, Path=DataContext.OrderNumber}"/>
                                                                                         </DataTemplate>
                                                                                     </Setter.Value>
                                                                                 </Setter>
@@ -205,7 +206,8 @@
                                                                                 <Setter Property="ContentTemplate">
                                                                                     <Setter.Value>
                                                                                         <DataTemplate>
-                                                                                            <CheckBox IsChecked="{Binding IsCorrect}"/>
+                                                                                            <CheckBox 
+                                    IsChecked="{Binding DataContext.IsCorrect, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}}"/>
                                                                                         </DataTemplate>
                                                                                     </Setter.Value>
                                                                                 </Setter>

@@ -181,11 +181,17 @@ namespace UQuiz.ViewModels
                 var answers = new List<AnswerData>();
                 foreach (var q in Questions)
                 {
+                    var selectedIds = q.IsChoice
+                        ? q.Options.Where(o => o.IsSelected).Select(o => o.Id).ToList()
+                        : null;
+
+                    System.Diagnostics.Debug.WriteLine($"Вопрос {q.Id}: выбрано {selectedIds?.Count ?? 0} вариантов: [{string.Join(",", selectedIds ?? new List<int>())}]");
+
                     var answer = new AnswerData
                     {
                         QuestionId = q.Id,
                         TextAnswer = q.IsText ? q.TextAnswer : null,
-                        SelectedOptionIds = q.IsChoice ? q.Options.Where(o => o.IsSelected).Select(o => o.Id).ToList() : null
+                        SelectedOptionIds = selectedIds
                     };
                     answers.Add(answer);
                 }

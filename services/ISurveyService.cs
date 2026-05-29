@@ -130,8 +130,10 @@ namespace UQuiz.services
         public string StudentAnswer { get; set; }
         public List<int> SelectedOptionIds { get; set; }
         public List<string> SelectedOptionTexts { get; set; }
+        public List<string> CorrectOptionTexts { get; set; }   // Добавить
         public decimal? Score { get; set; }
         public string CorrectAnswer { get; set; }
+        public bool IsAutoChecked { get; set; }                 // Добавить
     }
 
     public class SurveyAnalytics
