@@ -23,6 +23,7 @@ namespace UQuiz.services
         void UpdateResponseTotalScore(int responseId);
         SurveyAnalytics GetSurveyAnalytics(int surveyId);
         TeacherAnalytics GetTeacherAnalytics(int teacherId);
+        OrganizationAnalytics GetOrganizationAnalytics(int organizationId);
 
     }
 
@@ -145,8 +146,13 @@ namespace UQuiz.services
         public decimal MaxScore { get; set; }
         public List<QuestionStats> QuestionStats { get; set; }
         public List<ScoreDistribution> ScoreDistribution { get; set; }
+        public List<TimeDistribution> TimeDistribution { get; set; }
     }
-
+    public class TimeDistribution
+    {
+        public string Label { get; set; }
+        public int Count { get; set; }
+    }
     public class QuestionStats
     {
         public int QuestionNumber { get; set; }
@@ -176,5 +182,25 @@ namespace UQuiz.services
         public string Title { get; set; }
         public decimal AverageScore { get; set; }
         public DateTime CreatedDate { get; set; }
+    }
+
+    public class OrganizationAnalytics
+    {
+        public int TotalTeachers { get; set; }
+        public int TotalSurveys { get; set; }
+        public int TotalStudents { get; set; }
+        public decimal OverallAverageScore { get; set; }
+        public List<TeacherAnalyticsItem> TeacherStats { get; set; }
+    }
+
+    public class TeacherAnalyticsItem
+    {
+        public int TeacherId { get; set; }
+        public string TeacherName { get; set; }
+        public string Subject { get; set; }
+        public int SurveysCount { get; set; }
+        public int StudentsCount { get; set; }
+        public decimal AverageScore { get; set; }
+        public int CompletedSurveys { get; set; }
     }
 }

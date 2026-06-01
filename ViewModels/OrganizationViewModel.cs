@@ -20,11 +20,15 @@ namespace UQuiz.ViewModels
         private ObservableCollection<TeacherItemViewModel> _myTeachers;
         private ObservableCollection<TeacherItemViewModel> _searchResults;
         private ObservableCollection<SentRequestViewModel> _sentRequests;
+        private OrganizationAnalytics _organizationAnalytics;
+        private ObservableCollection<TeacherAnalyticsItem> _teacherStats;
+        private readonly ISurveyService _surveyService;
 
         public OrganizationViewModel(Organization organization)
         {
             _organization = organization;
             _userService = new UserService();
+            _surveyService = new SurveyService();
 
             OrganizationName = organization.FullName ?? organization.Login;
             OrganizationEmail = organization.Email;
@@ -42,6 +46,8 @@ namespace UQuiz.ViewModels
             MyTeachers = new ObservableCollection<TeacherItemViewModel>();
             SearchResults = new ObservableCollection<TeacherItemViewModel>();
             SentRequests = new ObservableCollection<SentRequestViewModel>();
+            TeacherStats = new ObservableCollection<TeacherAnalyticsItem>();
+
 
             SelectedMenu = "Teachers";
             LoadData();
@@ -103,6 +109,18 @@ namespace UQuiz.ViewModels
             set => SetProperty(ref _selectedTeacher, value);
         }
 
+        public OrganizationAnalytics OrganizationAnalytics
+        {
+            get => _organizationAnalytics;
+            set => SetProperty(ref _organizationAnalytics, value);
+        }
+
+        public ObservableCollection<TeacherAnalyticsItem> TeacherStats
+        {
+            get => _teacherStats;
+            set => SetProperty(ref _teacherStats, value);
+        }
+
         public ICommand NavigateCommand { get; }
         public ICommand LogoutCommand { get; }
         public ICommand SearchTeacherCommand { get; }
@@ -161,6 +179,25 @@ namespace UQuiz.ViewModels
             }
         }
 
+        private void LoadAnalytics()
+        {
+            try
+            {
+                OrganizationAnalytics = _surveyService.GetOrganizationAnalytics(_organization.Id);
+
+                TeacherStats.Clear();
+                if (OrganizationAnalytics?.TeacherStats != null)
+                {
+                    foreach (var t in OrganizationAnalytics.TeacherStats)
+                        TeacherStats.Add(t);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Ошибка загрузки аналитики: {ex.Message}");
+            }
+        }
+
         private void ExecuteSendRequest(object parameter)
         {
             if (parameter is TeacherItemViewModel teacher)
@@ -214,6 +251,7 @@ namespace UQuiz.ViewModels
             {
                 case "Analytics":
                     PageTitle = "Аналитика";
+                    LoadAnalytics();
                     break;
                 case "Teachers":
                     PageTitle = "Учителя";

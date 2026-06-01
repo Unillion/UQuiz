@@ -644,6 +644,109 @@ namespace UQuiz.services
                         });
                     }
                 }
+                analytics.TimeDistribution = new List<TimeDistribution>();
+                var timeRanges = new[] { 5, 10, 15, 20, 30, 60 };
+                var timeLabels = new[] { "0-5 мин", "5-10 мин", "10-15 мин", "15-20 мин", "20-30 мин", "30+ мин" };
+
+                for (int i = 0; i < timeRanges.Length; i++)
+                {
+                    int count;
+                    if (i == 0)
+                    {
+                        count = responses.Count(r => (r.CompletedDate - r.StartedDate).Value.TotalMinutes <= timeRanges[i]);
+                    }
+                    else if (i == timeRanges.Length - 1)
+                    {
+                        count = responses.Count(r => (r.CompletedDate - r.StartedDate).Value.TotalMinutes > timeRanges[i - 1]);
+                    }
+                    else
+                    {
+                        count = responses.Count(r => (r.CompletedDate - r.StartedDate).Value.TotalMinutes > timeRanges[i - 1]
+                                                  && (r.CompletedDate - r.StartedDate).Value.TotalMinutes <= timeRanges[i]);
+                    }
+
+                    analytics.TimeDistribution.Add(new TimeDistribution
+                    {
+                        Label = timeLabels[i],
+                        Count = count
+                    });
+                }
+                return analytics;
+            }
+        }
+
+        public OrganizationAnalytics GetOrganizationAnalytics(int organizationId)
+        {
+            using (var context = new AppDbContext())
+            {
+                // Получаем всех учителей организации
+                var teacherIds = context.TeacherOrganizations
+                    .Where(to => to.OrganizationId == organizationId)
+                    .Select(to => to.TeacherId)
+                    .ToList();
+
+                // ВСЕ опросы этих учителей (не только в этой организации)
+                var allSurveys = context.Surveys
+                    .Where(s => teacherIds.Contains(s.TeacherId))
+                    .ToList();
+
+                var surveyIds = allSurveys.Select(s => s.Id).ToList();
+
+                // Все ответы на эти опросы
+                var allResponses = context.SurveyResponses
+                    .Where(r => surveyIds.Contains(r.SurveyId))
+                    .ToList();
+
+                // Все назначения учеников
+                var allAssignments = context.SurveyAssignments
+                    .Where(sa => surveyIds.Contains(sa.SurveyId))
+                    .ToList();
+
+                var totalStudents = allAssignments.Select(a => a.StudentId).Distinct().Count();
+
+                var analytics = new OrganizationAnalytics
+                {
+                    TotalTeachers = teacherIds.Count,
+                    TotalSurveys = allSurveys.Count,
+                    TotalStudents = totalStudents,
+                    OverallAverageScore = allResponses.Any() ? allResponses.Average(r => r.TotalScore ?? 0) : 0,
+                    TeacherStats = new List<TeacherAnalyticsItem>()
+                };
+
+                foreach (var teacherId in teacherIds)
+                {
+                    var teacher = context.Users.Find(teacherId);
+
+                    // Все опросы этого учителя
+                    var teacherSurveys = allSurveys.Where(s => s.TeacherId == teacherId).ToList();
+                    var teacherSurveyIds = teacherSurveys.Select(s => s.Id).ToList();
+
+                    // Ответы на опросы этого учителя
+                    var teacherResponses = allResponses
+                        .Where(r => teacherSurveyIds.Contains(r.SurveyId))
+                        .ToList();
+
+                    // Ученики этого учителя в этой организации
+                    var teacherStudents = context.TeacherStudents
+                        .Count(ts => ts.TeacherId == teacherId && ts.OrganizationId == organizationId);
+
+                    var teacherDept = context.Teachers.FirstOrDefault(t => t.UserId == teacherId);
+
+                    var item = new TeacherAnalyticsItem
+                    {
+                        TeacherId = teacherId,
+                        TeacherName = teacher?.FullName ?? teacher?.Login,
+                        Subject = teacherDept?.Department ?? "Не указан",
+                        SurveysCount = teacherSurveys.Count,
+                        StudentsCount = teacherStudents,
+                        AverageScore = teacherResponses.Any() ? teacherResponses.Average(r => r.TotalScore ?? 0) : 0,
+                        CompletedSurveys = teacherResponses.Count
+                    };
+
+                    System.Diagnostics.Debug.WriteLine($"Учитель {item.TeacherName}: опросов={item.SurveysCount}, средний={item.AverageScore}, пройдено={item.CompletedSurveys}");
+
+                    analytics.TeacherStats.Add(item);
+                }
 
                 return analytics;
             }

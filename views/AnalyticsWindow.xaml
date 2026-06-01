@@ -7,7 +7,7 @@
         Background="Transparent"
         ResizeMode="CanResize"
         WindowStartupLocation="CenterScreen"
-        Height="700" Width="900">
+        Height="800" Width="1000">
 
     <Window.Resources>
         <SolidColorBrush x:Key="PrimaryBrush" Color="#3F51B5"/>
@@ -55,54 +55,79 @@
                                VerticalAlignment="Center" Margin="12,0,0,0">
                         <Run Text="Аналитика: "/><Run Text="{Binding Analytics.Title}"/>
                     </TextBlock>
+                    <Button Content="&#xE711;" Style="{StaticResource HeaderButtonStyle}" 
+                            HorizontalAlignment="Right"
+                            Click="CloseButton_Click"/>
                 </Grid>
             </Border>
 
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="20">
+
+                    <!-- Карточки -->
                     <WrapPanel Margin="0,0,0,20">
                         <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
-                                Padding="20" Margin="0,0,15,15" Width="180">
+                                Padding="20" Margin="0,0,15,15" Width="200">
                             <StackPanel>
-                                <TextBlock Text="Прошли опрос" FontSize="12" Foreground="#757575"/>
+                                <TextBlock Text="Прошли" FontSize="12" Foreground="#757575"/>
                                 <TextBlock FontSize="28" FontWeight="Bold" Foreground="#3F51B5">
-                                    <Run Text="{Binding Analytics.CompletedCount}"/><Run Text=" / "/><Run Text="{Binding Analytics.TotalStudents}"/>
+                                    <Run Text="{Binding Analytics.CompletedCount}"/><Run Text=" из "/><Run Text="{Binding Analytics.TotalStudents}"/>
                                 </TextBlock>
                             </StackPanel>
                         </Border>
                         <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
-                                Padding="20" Margin="0,0,15,15" Width="180">
+                                Padding="20" Margin="0,0,15,15" Width="200">
                             <StackPanel>
                                 <TextBlock Text="Средний балл" FontSize="12" Foreground="#757575"/>
-                                <TextBlock Text="{Binding Analytics.AverageScore, StringFormat=N1}" 
-                                           FontSize="28" FontWeight="Bold" Foreground="#4CAF50"/>
+                                <TextBlock FontSize="28" FontWeight="Bold" Foreground="#4CAF50">
+                                    <Run Text="{Binding Analytics.AverageScore, StringFormat=N1}"/>
+                                </TextBlock>
                             </StackPanel>
                         </Border>
                         <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
-                                Padding="20" Margin="0,0,15,15" Width="180">
+                                Padding="20" Margin="0,0,15,15" Width="200">
                             <StackPanel>
                                 <TextBlock Text="Макс. балл" FontSize="12" Foreground="#757575"/>
-                                <TextBlock Text="{Binding Analytics.MaxScore, StringFormat=N0}" 
-                                           FontSize="28" FontWeight="Bold" Foreground="#FF9800"/>
+                                <TextBlock FontSize="28" FontWeight="Bold" Foreground="#FF9800">
+                                    <Run Text="{Binding Analytics.MaxScore, StringFormat=N0}"/>
+                                </TextBlock>
                             </StackPanel>
                         </Border>
                     </WrapPanel>
 
+                    <!-- График 1: Успеваемость по вопросам (горизонтальные столбцы) -->
                     <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
                             Padding="15" Margin="0,0,0,20">
                         <StackPanel>
-                            <TextBlock Text="Распределение оценок" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,10"/>
-                            <oxy:PlotView Model="{Binding ScoreDistributionModel}" Height="300"/>
+                            <TextBlock Text="Средний балл по каждому вопросу" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,5"/>
+                            <TextBlock Text="Показывает, насколько хорошо ученики справляются с каждым вопросом" 
+                                       FontSize="12" Foreground="#757575" Margin="0,0,0,15"/>
+                            <oxy:PlotView Model="{Binding QuestionStatsModel}" Controller="{x:Null}" Height="300"/>
                         </StackPanel>
                     </Border>
 
+                    <!-- График 2: Распределение оценок (круговая диаграмма) -->
+                    <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
+                            Padding="15">
+                        <StackPanel>
+                            <TextBlock Text="Распределение результатов" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,5"/>
+                            <TextBlock Text="Сколько учеников получили отлично, хорошо, удовлетворительно" 
+                                       FontSize="12" Foreground="#757575" Margin="0,0,0,15"/>
+                            <oxy:PlotView Model="{Binding ScoreDistributionModel}" Controller="{x:Null}"  Height="350"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- График времени выполнения -->
                     <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
                             Padding="15" Margin="0,0,0,20">
                         <StackPanel>
-                            <TextBlock Text="Средний балл по вопросам" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,10"/>
-                            <oxy:PlotView Model="{Binding QuestionStatsModel}" Height="400"/>
+                            <TextBlock Text="Время выполнения" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,5"/>
+                            <TextBlock Text="Сколько времени ученики тратят на прохождение опроса" 
+                                     FontSize="12" Foreground="#757575" Margin="0,0,0,15"/>
+                            <oxy:PlotView Model="{Binding TimeDistributionModel}" Controller="{x:Null}" Height="300"/>
                         </StackPanel>
                     </Border>
+
                 </StackPanel>
             </ScrollViewer>
         </Grid>
