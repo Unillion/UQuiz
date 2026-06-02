@@ -36,6 +36,9 @@ namespace UQuiz.ViewModels
         public ICommand RejectRequestCommand { get; }
         public ICommand OpenSurveyCommand { get; }
         public ICommand OpenAnalyticsCommand { get; }
+        public ICommand DeleteSurveyCommand { get; }
+        public ICommand EditSurveyCommand { get; }
+
         private SurveyAnalytics _selectedSurveyAnalytics;
         private TeacherAnalytics _teacherAnalytics;
 
@@ -71,8 +74,8 @@ namespace UQuiz.ViewModels
             OpenSurveyCommand = new RelayCommand(ExecuteOpenSurvey);
             OpenAnalyticsCommand = new RelayCommand(ExecuteOpenAnalytics);
 
-
-
+            DeleteSurveyCommand = new RelayCommand(ExecuteDeleteSurvey);
+            EditSurveyCommand = new RelayCommand(ExecuteEditSurvey);
 
             LoadProfileData();
             SelectedMenu = "Surveys";
@@ -230,7 +233,6 @@ namespace UQuiz.ViewModels
                 Surveys.Clear();
 
             var surveys = _surveyService.GetSurveysByTeacher(_teacher.Id);
-
             foreach (var s in surveys)
             {
                 Surveys.Add(new SurveyCardViewModel
@@ -242,11 +244,49 @@ namespace UQuiz.ViewModels
                     AssignedCount = s.AssignedCount,
                     CompletedCount = s.CompletedCount,
                     CompletedCountDisplay = $"{s.CompletedCount}/{s.AssignedCount}",
-                    CreatedDate = s.CreatedDate.ToString("dd.MM.yyyy")
+                    CreatedDate = s.CreatedDate.ToString("dd.MM.yyyy"),
+                    IsSent = s.IsSent
                 });
             }
-
             OnPropertyChanged(nameof(Surveys));
+        }
+
+        private void ExecuteDeleteSurvey(object parameter)
+        {
+            if (parameter is SurveyCardViewModel survey)
+            {
+                var result = MessageBox.Show(
+                    $"Вы уверены, что хотите удалить опрос \"{survey.Title}\"?\nВсе ответы учеников будут удалены.",
+                    "Удаление опроса",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        _surveyService.DeleteSurvey(survey.Id);
+                        LoadSurveys();
+                        MessageBox.Show("Опрос удалён", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Ошибка удаления: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+        }
+        private void ExecuteEditSurvey(object parameter)
+        {
+            if (parameter is SurveyCardViewModel survey && !survey.IsSent)
+            {
+                var editWindow = new SurveyBuilderWindow(_teacher, survey.Id);
+                editWindow.Owner = Application.Current.MainWindow;
+                if (editWindow.ShowDialog() == true)
+                {
+                    LoadSurveys();
+                }
+            }
         }
         private void ExecuteNavigate(object parameter)
         {
@@ -658,7 +698,8 @@ namespace UQuiz.ViewModels
         private string _createdDate;
         private int _assignedCount;
         private int _completedCount;
-
+        private bool _isSent;
+        public bool IsSent { get => _isSent; set => SetProperty(ref _isSent, value); }
         public int Id { get => _id; set => SetProperty(ref _id, value); }
         public string Title { get => _title; set => SetProperty(ref _title, value); }
         public string Description { get => _description; set => SetProperty(ref _description, value); }

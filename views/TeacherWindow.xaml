@@ -93,29 +93,56 @@
         </Style>
 
         <DataTemplate x:Key="SurveyCardTemplate">
-            <Border Width="260" Style="{StaticResource SurveyCardStyle}" 
-                MouseLeftButtonUp="SurveyCard_MouseLeftButtonUp" Tag="{Binding}">
+            <Border Width="280" Style="{StaticResource SurveyCardStyle}">
                 <StackPanel>
-                    <TextBlock Text="{Binding Title}" FontSize="15" FontWeight="SemiBold" 
-                               Foreground="#212121" Margin="0,0,0,6"/>
+                    <!-- Заголовок с кнопками -->
+                    <Grid Margin="0,0,0,8">
+                        <TextBlock Text="{Binding Title}" FontSize="15" FontWeight="SemiBold" 
+                           Foreground="#212121" VerticalAlignment="Center"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Content="✎" Width="30" Height="30" Background="Transparent" 
+                                BorderThickness="0" Foreground="#3F51B5" Cursor="Hand" ToolTip="Редактировать"
+                                Visibility="{Binding IsSent, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse}"
+                                Command="{Binding DataContext.EditSurveyCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                                CommandParameter="{Binding}"/>
+                            <Button Content="✕" Width="30" Height="30" Background="Transparent" 
+                                BorderThickness="0" Foreground="#E53935" Cursor="Hand" ToolTip="Удалить"
+                                Command="{Binding DataContext.DeleteSurveyCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                                CommandParameter="{Binding}"/>
+                        </StackPanel>
+                    </Grid>
+
                     <TextBlock Text="{Binding Description}" FontSize="12" 
-                               Foreground="#757575" Margin="0,0,0,12" TextWrapping="Wrap"/>
-                    <StackPanel Orientation="Horizontal">
+                       Foreground="#757575" Margin="0,0,0,12" TextWrapping="Wrap"/>
+
+                    <!-- Статистика -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                         <TextBlock Text="Вопросов:" Foreground="#9E9E9E" FontSize="11"/>
                         <TextBlock Text="{Binding QuestionsCount}" Foreground="#3F51B5" FontSize="11" 
-                                   FontWeight="SemiBold" Margin="4,0,12,0"/>
+                           FontWeight="SemiBold" Margin="4,0,12,0"/>
                         <TextBlock Text="Прошли:" Foreground="#9E9E9E" FontSize="11"/>
                         <TextBlock Text="{Binding CompletedCountDisplay}" Foreground="#FF9800" FontSize="11" 
-                                FontWeight="SemiBold" Margin="4,0,0,0"/>
+                           FontWeight="SemiBold" Margin="4,0,0,0"/>
                     </StackPanel>
-                    <Border Height="1" Background="#EEEEEE" Margin="0,10"/>
+
+                    <Border Height="1" Background="#EEEEEE" Margin="0,5"/>
+
+                    <!-- Кнопки действий -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0">
+                        <Button Content="Отправить" Background="Transparent" BorderBrush="#3F51B5" 
+                        Foreground="#3F51B5" BorderThickness="1" Cursor="Hand" FontSize="11"
+                        Padding="8,4" Margin="0,0,5,0"
+                        Command="{Binding DataContext.OpenSurveyCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                        CommandParameter="{Binding}"/>
+                        <Button Content="Аналитика" Background="Transparent" BorderBrush="#009688" 
+                        Foreground="#009688" BorderThickness="1" Cursor="Hand" FontSize="11"
+                        Padding="8,4"
+                        Command="{Binding DataContext.OpenAnalyticsCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                        CommandParameter="{Binding}"/>
+                    </StackPanel>
+
                     <TextBlock Text="{Binding CreatedDate, StringFormat='Создан: {0}'}" FontSize="10" 
-                               Foreground="#9E9E9E" HorizontalAlignment="Right"/>
-                    <Button Content="📊 Аналитика" Background="Transparent" BorderThickness="0" 
-        Foreground="#3F51B5" Cursor="Hand" HorizontalAlignment="Right"
-        Margin="0,5,0,0" FontSize="12"
-        Command="{Binding DataContext.OpenAnalyticsCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-        CommandParameter="{Binding}"/>
+                       Foreground="#9E9E9E" HorizontalAlignment="Right" Margin="0,5,0,0"/>
                 </StackPanel>
             </Border>
         </DataTemplate>

@@ -24,7 +24,8 @@ namespace UQuiz.services
         SurveyAnalytics GetSurveyAnalytics(int surveyId);
         TeacherAnalytics GetTeacherAnalytics(int teacherId);
         OrganizationAnalytics GetOrganizationAnalytics(int organizationId);
-
+        SurveyData GetSurveyForEdit(int surveyId);
+        void UpdateSurvey(SurveyData surveyData);
     }
 
     public class SurveyData
@@ -34,6 +35,7 @@ namespace UQuiz.services
         public int TeacherId { get; set; }
         public int OrganizationId { get; set; }
         public List<QuestionData> Questions { get; set; }
+        public int Id { get; set; }
     }
 
     public class QuestionData
@@ -67,6 +69,8 @@ namespace UQuiz.services
         public string Score { get; set; }
         public int AssignedCount { get; set; }
         public int CompletedCount { get; set; }
+
+        public bool IsSent { get; set; }
     }
     public class SurveyDetail
     {
@@ -110,6 +114,7 @@ namespace UQuiz.services
         public DateTime? CompletedDate { get; set; }
         public decimal? TotalScore { get; set; }
         public int TotalQuestions { get; set; }
+        public decimal MaxScore { get; set; }
     }
 
     public class StudentResponseDetail
@@ -131,10 +136,10 @@ namespace UQuiz.services
         public string StudentAnswer { get; set; }
         public List<int> SelectedOptionIds { get; set; }
         public List<string> SelectedOptionTexts { get; set; }
-        public List<string> CorrectOptionTexts { get; set; }   // Добавить
+        public List<string> CorrectOptionTexts { get; set; }
         public decimal? Score { get; set; }
         public string CorrectAnswer { get; set; }
-        public bool IsAutoChecked { get; set; }                 // Добавить
+        public bool IsAutoChecked { get; set; }
     }
 
     public class SurveyAnalytics

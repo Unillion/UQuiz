@@ -23,6 +23,13 @@ namespace UQuiz.views
             InitializeComponent();
             DataContext = new SurveyBuilderViewModel(teacher);
         }
+
+        public SurveyBuilderWindow(Teacher teacher, int surveyId)
+        {
+            InitializeComponent();
+            DataContext = new SurveyBuilderViewModel(teacher, surveyId);
+        }
+
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ClickCount == 2)
@@ -34,6 +41,6 @@ namespace UQuiz.views
                 DragMove();
             }
         }
-
     }
+
 }

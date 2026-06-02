@@ -105,14 +105,12 @@ namespace UQuiz.services
         {
             using (var context = new AppDbContext())
             {
-                // Проверка на повторную отправку
                 var existingResponse = context.SurveyResponses
                     .Any(sr => sr.SurveyId == surveyId && sr.StudentId == studentId);
 
                 if (existingResponse)
                     throw new Exception("Вы уже отправили этот опрос");
 
-                // Создаём запись о прохождении
                 var response = new SurveyResponseEntity
                 {
                     SurveyId = surveyId,
@@ -127,11 +125,9 @@ namespace UQuiz.services
 
                 foreach (var answer in answers)
                 {
-                    // Получаем вопрос
                     var question = context.Questions.Find(answer.QuestionId);
                     if (question == null) continue;
 
-                    // Создаём ответ
                     var answerEntity = new AnswerEntity
                     {
                         ResponseId = response.Id,
@@ -139,24 +135,19 @@ namespace UQuiz.services
                         AnswerText = answer.TextAnswer ?? ""
                     };
 
-                    // АВТОПРОВЕРКА
                     if (question.QuestionType == "SingleChoice" || question.QuestionType == "MultipleChoice")
                     {
-                        // Загружаем ВСЕ варианты для этого вопроса
                         var allOptions = context.AnswerOptions
                             .Where(o => o.QuestionId == question.Id)
                             .ToList();
 
-                        // Находим правильные
                         var correctOptionIds = allOptions
                             .Where(o => o.IsCorrect)
                             .Select(o => o.Id)
                             .ToList();
 
-                        // Выбранные учеником
                         var selectedOptionIds = answer.SelectedOptionIds ?? new List<int>();
 
-                        // ОТЛАДКА
                         System.Diagnostics.Debug.WriteLine($"=== Вопрос {question.Id}: {question.QuestionText} ===");
                         System.Diagnostics.Debug.WriteLine($"Тип: {question.QuestionType}, Баллы: {question.Points}");
                         System.Diagnostics.Debug.WriteLine($"Всего вариантов: {allOptions.Count}");
@@ -165,7 +156,6 @@ namespace UQuiz.services
                         System.Diagnostics.Debug.WriteLine($"Правильных ID: [{string.Join(",", correctOptionIds)}]");
                         System.Diagnostics.Debug.WriteLine($"Выбрано ID: [{string.Join(",", selectedOptionIds)}]");
 
-                        // Вычисляем баллы
                         decimal score = 0;
 
                         if (question.QuestionType == "SingleChoice")
@@ -205,12 +195,10 @@ namespace UQuiz.services
                         answerEntity.Score = score;
                         totalScore += score;
                     }
-                    // Текстовые вопросы — без автопроверки
 
                     context.Answers.Add(answerEntity);
                     context.SaveChanges();
 
-                    // Сохраняем выбранные варианты
                     if (answer.SelectedOptionIds != null && answer.SelectedOptionIds.Count > 0)
                     {
                         foreach (var optionId in answer.SelectedOptionIds)
@@ -225,11 +213,9 @@ namespace UQuiz.services
                     }
                 }
 
-                // Сохраняем общий балл
                 response.TotalScore = totalScore;
                 context.SaveChanges();
 
-                // Помечаем как выполненное
                 var assignment = context.SurveyAssignments
                     .FirstOrDefault(sa => sa.SurveyId == surveyId && sa.StudentId == studentId);
                 if (assignment != null)
@@ -269,10 +255,117 @@ namespace UQuiz.services
                         IsActive = s.IsActive,
                         QuestionsCount = questionsCount,
                         AssignedCount = assignedCount,
-                        CompletedCount = completedCount
+                        CompletedCount = completedCount,
+                        IsSent = assignedCount > 0
                     });
                 }
                 return result;
+            }
+        }
+        public SurveyData GetSurveyForEdit(int surveyId)
+        {
+            using (var context = new AppDbContext())
+            {
+                var survey = context.Surveys.Find(surveyId);
+                if (survey == null) return null;
+
+                var questions = context.Questions
+                    .Where(q => q.SurveyId == surveyId)
+                    .OrderBy(q => q.OrderNumber)
+                    .ToList();
+
+                var data = new SurveyData
+                {
+                    Title = survey.Title,
+                    Description = survey.Description,
+                    TeacherId = survey.TeacherId,
+                    OrganizationId = survey.OrganizationId ?? 0,
+                    Questions = new List<QuestionData>()
+                };
+
+                foreach (var q in questions)
+                {
+                    var qData = new QuestionData
+                    {
+                        OrderNumber = q.OrderNumber,
+                        QuestionText = q.QuestionText,
+                        QuestionType = q.QuestionType,
+                        Points = q.Points,
+                        Options = new List<OptionData>()
+                    };
+
+                    var options = context.AnswerOptions
+                        .Where(o => o.QuestionId == q.Id)
+                        .OrderBy(o => o.OrderNumber)
+                        .ToList();
+
+                    foreach (var o in options)
+                    {
+                        qData.Options.Add(new OptionData
+                        {
+                            OrderNumber = o.OrderNumber,
+                            OptionText = o.OptionText,
+                            IsCorrect = o.IsCorrect,
+                            Points = 0
+                        });
+                    }
+
+                    data.Questions.Add(qData);
+                }
+
+                return data;
+            }
+        }
+
+        public void UpdateSurvey(SurveyData surveyData)
+        {
+            using (var context = new AppDbContext())
+            {
+                var survey = context.Surveys.Find(surveyData.Id);
+                if (survey == null) return;
+
+                survey.Title = surveyData.Title;
+                survey.Description = surveyData.Description;
+
+                // Удаляем старые вопросы и варианты
+                var oldQuestions = context.Questions.Where(q => q.SurveyId == surveyData.Id).ToList();
+                foreach (var q in oldQuestions)
+                {
+                    var options = context.AnswerOptions.Where(o => o.QuestionId == q.Id).ToList();
+                    context.AnswerOptions.RemoveRange(options);
+                }
+                context.Questions.RemoveRange(oldQuestions);
+                context.SaveChanges();
+
+                // Добавляем новые вопросы
+                foreach (var q in surveyData.Questions)
+                {
+                    var questionEntity = new QuestionEntity
+                    {
+                        SurveyId = surveyData.Id,
+                        QuestionText = q.QuestionText,
+                        QuestionType = q.QuestionType,
+                        OrderNumber = q.OrderNumber,
+                        Points = q.Points
+                    };
+                    context.Questions.Add(questionEntity);
+                    context.SaveChanges();
+
+                    if (q.Options != null)
+                    {
+                        foreach (var opt in q.Options)
+                        {
+                            context.AnswerOptions.Add(new AnswerOptionEntity
+                            {
+                                QuestionId = questionEntity.Id,
+                                OptionText = opt.OptionText,
+                                OrderNumber = opt.OrderNumber,
+                                IsCorrect = opt.IsCorrect
+                            });
+                        }
+                        context.SaveChanges();
+                    }
+                }
             }
         }
 
@@ -303,12 +396,37 @@ namespace UQuiz.services
         {
             using (var context = new AppDbContext())
             {
+                var responses = context.SurveyResponses.Where(r => r.SurveyId == surveyId).ToList();
+                foreach (var response in responses)
+                {
+                    var answers = context.Answers.Where(a => a.ResponseId == response.Id).ToList();
+                    foreach (var answer in answers)
+                    {
+                        var choices = context.AnswerChoices.Where(c => c.AnswerId == answer.Id).ToList();
+                        context.AnswerChoices.RemoveRange(choices);
+                    }
+                    context.Answers.RemoveRange(answers);
+                }
+                context.SurveyResponses.RemoveRange(responses);
+
+                var assignments = context.SurveyAssignments.Where(sa => sa.SurveyId == surveyId).ToList();
+                context.SurveyAssignments.RemoveRange(assignments);
+
+                var questions = context.Questions.Where(q => q.SurveyId == surveyId).ToList();
+                foreach (var q in questions)
+                {
+                    var options = context.AnswerOptions.Where(o => o.QuestionId == q.Id).ToList();
+                    context.AnswerOptions.RemoveRange(options);
+                }
+                context.Questions.RemoveRange(questions);
+
                 var survey = context.Surveys.Find(surveyId);
                 if (survey != null)
                 {
                     context.Surveys.Remove(survey);
-                    context.SaveChanges();
                 }
+
+                context.SaveChanges();
             }
         }
 
@@ -452,6 +570,7 @@ namespace UQuiz.services
                                   s.CreatedDate,
                                   TeacherName = u.FullName ?? u.Login,
                                   QuestionsCount = context.Questions.Count(q => q.SurveyId == s.Id),
+                                  MaxScore = context.Questions.Where(q => q.SurveyId == s.Id).Sum(q => q.Points),
                                   Score = sr != null ? sr.TotalScore : null
                               };
 
@@ -466,7 +585,7 @@ namespace UQuiz.services
                         CreatedDate = s.CreatedDate,
                         TeacherName = s.TeacherName,
                         QuestionsCount = s.QuestionsCount,
-                        Score = s.Score.HasValue ? $"{s.Score}/{s.QuestionsCount}" : null
+                        Score = s.Score.HasValue ? $"{s.Score}/{s.MaxScore}" : null
                     });
                 }
                 return result;
@@ -477,6 +596,9 @@ namespace UQuiz.services
         {
             using (var context = new AppDbContext())
             {
+                var questions = context.Questions.Where(q => q.SurveyId == surveyId).ToList();
+                var maxScore = questions.Sum(q => q.Points);
+
                 var responses = from sr in context.SurveyResponses
                                 join u in context.Users on sr.StudentId equals u.Id
                                 join s in context.Students on sr.StudentId equals s.UserId
@@ -490,7 +612,8 @@ namespace UQuiz.services
                                     StudentClass = s.Class ?? "—",
                                     CompletedDate = sr.CompletedDate,
                                     TotalScore = sr.TotalScore,
-                                    TotalQuestions = context.Questions.Count(q => q.SurveyId == surveyId)
+                                    TotalQuestions = questions.Count,
+                                    MaxScore = maxScore
                                 };
                 return responses.ToList();
             }
@@ -559,7 +682,6 @@ namespace UQuiz.services
                 {
                     answer.Score = score;
 
-                    // Обновляем правильный ответ в вопросе, если передан
                     if (!string.IsNullOrEmpty(correctAnswer))
                     {
                         var question = context.Questions.Find(answer.QuestionId);
@@ -598,13 +720,14 @@ namespace UQuiz.services
 
                 var responses = context.SurveyResponses.Where(r => r.SurveyId == surveyId).ToList();
                 var questions = context.Questions.Where(q => q.SurveyId == surveyId).OrderBy(q => q.OrderNumber).ToList();
+                var maxScore_ = questions.Sum(q => q.Points);
 
                 var analytics = new SurveyAnalytics
                 {
                     Title = survey.Title,
                     TotalStudents = context.SurveyAssignments.Count(sa => sa.SurveyId == surveyId),
                     CompletedCount = responses.Count,
-                    MaxScore = questions.Sum(q => q.Points),
+                    MaxScore = maxScore_,
                     AverageScore = responses.Any() ? responses.Average(r => r.TotalScore ?? 0) : 0,
                     QuestionStats = new List<QuestionStats>(),
                     ScoreDistribution = new List<ScoreDistribution>()

@@ -21,8 +21,9 @@ namespace UQuiz.ViewModels
         private string _description;
         private ObservableCollection<QuestionViewModel> _questions;
         private QuestionViewModel _selectedQuestion;
+        private int _surveyId;
 
-        public SurveyBuilderViewModel(Teacher teacher)
+        public SurveyBuilderViewModel(Teacher teacher, int surveyId = 0)
         {
             _teacher = teacher;
             _userService = new UserService();
@@ -35,6 +36,11 @@ namespace UQuiz.ViewModels
             RemoveOptionCommand = new RelayCommand(ExecuteRemoveOption);
             SaveSurveyCommand = new RelayCommand(ExecuteSaveSurvey, CanExecuteSaveSurvey);
             CancelCommand = new RelayCommand(ExecuteCancel);
+
+            if (surveyId > 0)
+            {
+                LoadSurveyForEdit(surveyId);
+            }
         }
 
         public string Title
@@ -109,6 +115,41 @@ namespace UQuiz.ViewModels
             }
         }
 
+        private void LoadSurveyForEdit(int surveyId)
+        {
+            var data = _surveyService.GetSurveyForEdit(surveyId);
+            if (data == null) return;
+
+            Title = data.Title;
+            Description = data.Description;
+
+            foreach (var q in data.Questions)
+            {
+                var qvm = new QuestionViewModel
+                {
+                    OrderNumber = q.OrderNumber,
+                    QuestionText = q.QuestionText,
+                    QuestionType = q.QuestionType,
+                    Points = q.Points
+                };
+
+                if (q.Options != null)
+                {
+                    foreach (var o in q.Options)
+                    {
+                        qvm.Options.Add(new OptionViewModel
+                        {
+                            OrderNumber = o.OrderNumber,
+                            OptionText = o.OptionText,
+                            IsCorrect = o.IsCorrect
+                        });
+                    }
+                }
+
+                Questions.Add(qvm);
+            }
+        }
+
         private bool CanExecuteSaveSurvey(object parameter)
         {
             return !string.IsNullOrWhiteSpace(Title) && Questions.Count > 0;
@@ -120,6 +161,7 @@ namespace UQuiz.ViewModels
             {
                 var organizations = _userService.GetTeacherOrganizations(_teacher.Id);
                 int organizationId;
+                System.Diagnostics.Debug.WriteLine($"Сохраняю опрос: _surveyId={_surveyId}");
 
                 if (organizations.Count == 0)
                 {
@@ -147,6 +189,7 @@ namespace UQuiz.ViewModels
 
                 var surveyData = new SurveyData
                 {
+                    Id = _surveyId,
                     Title = Title,
                     Description = Description,
                     TeacherId = _teacher.Id,
@@ -183,8 +226,20 @@ namespace UQuiz.ViewModels
 
                 _surveyService.SaveSurvey(surveyData);
 
-                MessageBox.Show($"Опрос \"{Title}\" сохранён!\nВопросов: {Questions.Count}",
-                              "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                if (_surveyId > 0)
+                {
+                    _surveyService.UpdateSurvey(surveyData);
+                    System.Diagnostics.Debug.WriteLine("Вызов UpdateSurvey");
+                    _surveyService.UpdateSurvey(surveyData);
+                }
+                else
+                {
+                    _surveyService.SaveSurvey(surveyData);
+                    System.Diagnostics.Debug.WriteLine("Вызов SaveSurvey (новый)");
+                    _surveyService.SaveSurvey(surveyData);
+                }
+
+                MessageBox.Show($"Опрос \"{Title}\" сохранён!", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
 
                 if (parameter is Window window)
                 {
