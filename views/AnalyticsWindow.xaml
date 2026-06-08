@@ -64,7 +64,6 @@
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="20">
 
-                    <!-- Карточки -->
                     <WrapPanel Margin="0,0,0,20">
                         <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
                                 Padding="20" Margin="0,0,15,15" Width="200">
@@ -95,7 +94,6 @@
                         </Border>
                     </WrapPanel>
 
-                    <!-- График 1: Успеваемость по вопросам (горизонтальные столбцы) -->
                     <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
                             Padding="15" Margin="0,0,0,20">
                         <StackPanel>
@@ -106,7 +104,6 @@
                         </StackPanel>
                     </Border>
 
-                    <!-- График 2: Распределение оценок (круговая диаграмма) -->
                     <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
                             Padding="15">
                         <StackPanel>
@@ -117,14 +114,13 @@
                         </StackPanel>
                     </Border>
 
-                    <!-- График времени выполнения -->
                     <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
                             Padding="15" Margin="0,0,0,20">
                         <StackPanel>
                             <TextBlock Text="Время выполнения" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,5"/>
                             <TextBlock Text="Сколько времени ученики тратят на прохождение опроса" 
                                      FontSize="12" Foreground="#757575" Margin="0,0,0,15"/>
-                            <oxy:PlotView Model="{Binding TimeDistributionModel}" Controller="{x:Null}" Height="300"/>
+                            <oxy:PlotView Model="{Binding TimeDistributionModel}"  Height="300"/>
                         </StackPanel>
                     </Border>
 

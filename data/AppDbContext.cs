@@ -34,7 +34,6 @@ namespace UQuiz.database
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            // ========== UserEntity ==========
             modelBuilder.Entity<UserEntity>()
                 .ToTable("Users")
                 .HasKey(e => e.Id);
@@ -76,7 +75,6 @@ namespace UQuiz.database
                 .Property(e => e.Phone)
                 .HasMaxLength(20);
 
-            // ========== TeacherEntity ==========
             modelBuilder.Entity<TeacherEntity>()
                 .ToTable("Teachers")
                 .HasKey(e => e.UserId);
@@ -93,7 +91,6 @@ namespace UQuiz.database
                 .HasRequired(e => e.User)
                 .WithOptional(u => u.Teacher);
 
-            // ========== StudentEntity ==========
             modelBuilder.Entity<StudentEntity>()
                 .ToTable("Students")
                 .HasKey(e => e.UserId);
@@ -110,7 +107,6 @@ namespace UQuiz.database
                 .HasRequired(e => e.User)
                 .WithOptional(u => u.Student);
 
-            // ========== OrganizationEntity ==========
             modelBuilder.Entity<OrganizationEntity>()
                 .ToTable("Organizations")
                 .HasKey(e => e.UserId);
@@ -136,10 +132,6 @@ namespace UQuiz.database
                 .HasRequired(e => e.User)
                 .WithOptional(u => u.Organization);
 
-
-         
-
-            // ========== ConnectionRequestEntity ==========
             modelBuilder.Entity<ConnectionRequestEntity>()
                 .ToTable("ConnectionRequests")
                 .HasKey(e => e.Id);
@@ -188,7 +180,6 @@ namespace UQuiz.database
                 .HasForeignKey(e => e.OrganizationId)
                 .WillCascadeOnDelete(false);
 
-            // ========== TeacherOrganizationEntity ==========
             modelBuilder.Entity<TeacherOrganizationEntity>()
                 .ToTable("TeacherOrganizations")
                 .HasKey(e => e.Id);
@@ -221,7 +212,6 @@ namespace UQuiz.database
                 .HasForeignKey(e => e.OrganizationId)
                 .WillCascadeOnDelete(false);
 
-            // ========== TeacherStudentEntity ==========
             modelBuilder.Entity<TeacherStudentEntity>()
                 .ToTable("TeacherStudents")
                 .HasKey(e => e.Id);
@@ -264,7 +254,6 @@ namespace UQuiz.database
                 .HasForeignKey(e => e.OrganizationId)
                 .WillCascadeOnDelete(false);
 
-            // ========== SurveyEntity ==========
             modelBuilder.Entity<SurveyEntity>()
                 .ToTable("Surveys")
                 .HasKey(e => e.Id);
@@ -310,7 +299,6 @@ namespace UQuiz.database
                 .HasForeignKey(e => e.OrganizationId)
                 .WillCascadeOnDelete(false);
 
-            // ========== QuestionEntity ==========
             modelBuilder.Entity<QuestionEntity>()
                 .ToTable("Questions")
                 .HasKey(e => e.Id);
@@ -348,7 +336,6 @@ namespace UQuiz.database
                 .HasForeignKey(e => e.SurveyId)
                 .WillCascadeOnDelete(true);
 
-            // ========== AnswerOptionEntity ==========
             modelBuilder.Entity<AnswerOptionEntity>()
                 .ToTable("AnswerOptions")
                 .HasKey(e => e.Id);
@@ -380,7 +367,6 @@ namespace UQuiz.database
                 .HasForeignKey(e => e.QuestionId)
                 .WillCascadeOnDelete(true);
 
-            // ========== SurveyAssignmentEntity ==========
             modelBuilder.Entity<SurveyAssignmentEntity>()
                 .ToTable("SurveyAssignments")
                 .HasKey(e => e.Id);
@@ -417,7 +403,6 @@ namespace UQuiz.database
                 .HasForeignKey(e => e.StudentId)
                 .WillCascadeOnDelete(false);
 
-            // ========== SurveyResponseEntity ==========
             modelBuilder.Entity<SurveyResponseEntity>()
                 .ToTable("SurveyResponses")
                 .HasKey(e => e.Id);
@@ -458,7 +443,6 @@ namespace UQuiz.database
             //    .HasOptional(e => e.Assignment)
             //    .WithOptionalPrincipal(a => a.Response);
 
-            // ========== AnswerEntity ==========
             modelBuilder.Entity<AnswerEntity>()
                 .ToTable("Answers")
                 .HasKey(e => e.Id);
@@ -491,7 +475,6 @@ namespace UQuiz.database
                 .HasForeignKey(e => e.QuestionId)
                 .WillCascadeOnDelete(false);
 
-            // ========== AnswerChoiceEntity ==========
             modelBuilder.Entity<AnswerChoiceEntity>()
                 .ToTable("AnswerChoices")
                 .HasKey(e => e.Id);

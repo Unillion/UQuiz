@@ -24,32 +24,31 @@
 
         <DropShadowEffect x:Key="WindowShadow" BlurRadius="15" ShadowDepth="0" Opacity="0.2" Color="Black"/>
 
-        <Style x:Key="CloseButtonStyle" TargetType="Button">
+        <Style x:Key="HeaderButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Foreground" Value="#757575"/>
+            <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
-            <Setter Property="Content" Value="&#xE711;"/>
             <Setter Property="FontSize" Value="12"/>
-            <Setter Property="Width" Value="40"/>
-            <Setter Property="Height" Value="30"/>
+            <Setter Property="Width" Value="46"/>
+            <Setter Property="Height" Value="32"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="0">
+                        <Border Background="{TemplateBinding Background}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#3F51B9"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#E81123"/>
-                    <Setter Property="Foreground" Value="White"/>
-                </Trigger>
-            </Style.Triggers>
         </Style>
+        
     </Window.Resources>
 
     <Border Background="#FAFAFA" CornerRadius="8" Effect="{StaticResource WindowShadow}">
@@ -64,9 +63,9 @@
                     <TextBlock Text="UQuiz" Foreground="White"
                                VerticalAlignment="Center" Margin="12,0,0,0" FontWeight="SemiBold"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Content="&#xE921;" Command="{Binding MinimizeCommand}"
+                        <Button Content="&#xE921;" Style="{StaticResource HeaderButtonStyle}" Command="{Binding MinimizeCommand}"
                             CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
-                        <Button Content="&#xE711;" Command="{Binding CloseCommand}"
+                        <Button Content="&#xE711;" Style="{StaticResource HeaderButtonStyle}" Command="{Binding CloseCommand}"
                             CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
                     </StackPanel>
                 </Grid>
@@ -79,7 +78,7 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel VerticalAlignment="Center" Margin="0,0,40,0">
-                    <TextBlock Text="PLACEHOLDER" FontSize="28" FontWeight="Light" 
+                    <TextBlock Text="Quiz" FontSize="28" FontWeight="Light" 
                                Foreground="#3F51B5" TextWrapping="Wrap"/>
                     <TextBlock Text="Платформа для опросов и глубокой аналитики успеваемости" 
                                FontSize="14" Foreground="#757575" Margin="0,15,0,0" TextWrapping="Wrap"/>
@@ -109,7 +108,8 @@
                                  Style="{StaticResource ModernTextBox}"/>
 
                         <TextBlock Text="Пароль" Foreground="#757575" FontSize="12" Margin="0,15,0,5"/>
-                        <PasswordBox x:Name="TxtPassword" Style="{StaticResource ModernPasswordBox}" 
+                        <PasswordBox x:Name="TxtPassword" Style="{StaticResource ModernPasswordBox}"
+                                    Password="12345678"
                                      PasswordChanged="TxtPassword_PasswordChanged"/>
 
                         <Button Content="Войти в систему" Height="40" Margin="0,30,0,0" 
@@ -128,7 +128,7 @@
 
                         <TextBlock TextAlignment="Center" Margin="0,20,0,0">
                             <Hyperlink Command="{Binding RegisterCommand}"
- CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
+                                CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
                                 Нет аккаунта? Зарегистрироваться</Hyperlink>
                         </TextBlock>
                     </StackPanel>

@@ -16,7 +16,7 @@ public class QuestionViewModel : ViewModelBase
     {
         Options = new ObservableCollection<OptionViewModel>();
         Points = 1;
-        QuestionType = "Text"; // По умолчанию текстовый
+        QuestionType = "Text";
         AddOptionCommand = new RelayCommand(ExecuteAddOption);
         RemoveOptionCommand = new RelayCommand(ExecuteRemoveOption, CanExecuteRemoveOption);
     }
@@ -44,12 +44,10 @@ public class QuestionViewModel : ViewModelBase
                 OnPropertyChanged(nameof(IsSingleChoice));
                 OnPropertyChanged(nameof(IsMultipleChoice));
                 OnPropertyChanged(nameof(IsText));
-                // Если тип текстовый - очищаем варианты
                 if (value == "Text")
                 {
                     Options.Clear();
                 }
-                // Если переключились на тип с вариантами и их нет - добавляем пустые
                 if ((value == "SingleChoice" || value == "MultipleChoice") && Options.Count == 0)
                 {
                     Options.Add(new OptionViewModel { OrderNumber = 1, OptionText = "Вариант 1" });

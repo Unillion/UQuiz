@@ -95,7 +95,6 @@
         <DataTemplate x:Key="SurveyCardTemplate">
             <Border Width="280" Style="{StaticResource SurveyCardStyle}">
                 <StackPanel>
-                    <!-- Заголовок с кнопками -->
                     <Grid Margin="0,0,0,8">
                         <TextBlock Text="{Binding Title}" FontSize="15" FontWeight="SemiBold" 
                            Foreground="#212121" VerticalAlignment="Center"/>
@@ -115,7 +114,6 @@
                     <TextBlock Text="{Binding Description}" FontSize="12" 
                        Foreground="#757575" Margin="0,0,0,12" TextWrapping="Wrap"/>
 
-                    <!-- Статистика -->
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                         <TextBlock Text="Вопросов:" Foreground="#9E9E9E" FontSize="11"/>
                         <TextBlock Text="{Binding QuestionsCount}" Foreground="#3F51B5" FontSize="11" 
@@ -127,7 +125,6 @@
 
                     <Border Height="1" Background="#EEEEEE" Margin="0,5"/>
 
-                    <!-- Кнопки действий -->
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0">
                         <Button Content="Отправить" Background="Transparent" BorderBrush="#3F51B5" 
                         Foreground="#3F51B5" BorderThickness="1" Cursor="Hand" FontSize="11"

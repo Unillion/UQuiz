@@ -77,7 +77,6 @@
             </Setter>
         </Style>
 
-        <!-- Шаблон для учителя -->
         <DataTemplate x:Key="TeacherTemplate">
             <Border BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
                     Padding="16" Margin="0,0,12,12" Width="260" Background="White">
@@ -92,7 +91,6 @@
             </Border>
         </DataTemplate>
 
-        <!-- Шаблон для опроса -->
         <DataTemplate x:Key="SurveyCardTemplate">
             <Border Width="260" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
                     Padding="16" Margin="0,0,12,12" Background="White">
@@ -109,7 +107,6 @@
             </Border>
         </DataTemplate>
 
-        <!-- Шаблон для заявки -->
         <DataTemplate x:Key="RequestTemplate">
             <Border BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
                     Padding="16" Margin="0,0,12,12" Width="280" Background="White">
@@ -214,51 +211,49 @@
                             <DataTemplate x:Key="Analytics">
                                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                                     <StackPanel Margin="24">
-                                        <!-- Общая сводка -->
                                         <WrapPanel Margin="0,0,0,20">
                                             <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
-                        Padding="20" Margin="0,0,15,15" Width="200">
+                                                    Padding="20" Margin="0,0,15,15" Width="200">
                                                 <StackPanel>
                                                     <TextBlock Text="Всего учителей" FontSize="12" Foreground="#757575"/>
                                                     <TextBlock Text="{Binding DataContext.OrganizationAnalytics.TotalTeachers, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" 
-                                   FontSize="28" FontWeight="Bold" Foreground="#009688"/>
+                                                        FontSize="28" FontWeight="Bold" Foreground="#009688"/>
                                                 </StackPanel>
                                             </Border>
                                             <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
-                        Padding="20" Margin="0,0,15,15" Width="200">
+                                                Padding="20" Margin="0,0,15,15" Width="200">
                                                 <StackPanel>
                                                     <TextBlock Text="Всего опросов" FontSize="12" Foreground="#757575"/>
                                                     <TextBlock Text="{Binding DataContext.OrganizationAnalytics.TotalSurveys, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" 
-                                   FontSize="28" FontWeight="Bold" Foreground="#3F51B5"/>
+                                                        FontSize="28" FontWeight="Bold" Foreground="#3F51B5"/>
                                                 </StackPanel>
                                             </Border>
                                             <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
-                        Padding="20" Margin="0,0,15,15" Width="200">
+                                                        Padding="20" Margin="0,0,15,15" Width="200">
                                                 <StackPanel>
                                                     <TextBlock Text="Всего учеников" FontSize="12" Foreground="#757575"/>
                                                     <TextBlock Text="{Binding DataContext.OrganizationAnalytics.TotalStudents, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" 
-                                   FontSize="28" FontWeight="Bold" Foreground="#FF9800"/>
+                                                        FontSize="28" FontWeight="Bold" Foreground="#FF9800"/>
                                                 </StackPanel>
                                             </Border>
                                             <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
-                        Padding="20" Margin="0,0,15,15" Width="200">
+                                                    Padding="20" Margin="0,0,15,15" Width="200">
                                                 <StackPanel>
                                                     <TextBlock Text="Средний балл" FontSize="12" Foreground="#757575"/>
                                                     <TextBlock Text="{Binding DataContext.OrganizationAnalytics.OverallAverageScore, StringFormat=N1, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" 
-                                   FontSize="28" FontWeight="Bold" Foreground="#4CAF50"/>
+                                                        FontSize="28" FontWeight="Bold" Foreground="#4CAF50"/>
                                                 </StackPanel>
                                             </Border>
                                         </WrapPanel>
 
-                                        <!-- Статистика по учителям -->
                                         <TextBlock Text="Статистика по учителям" FontWeight="SemiBold" FontSize="18" 
-                       Foreground="#212121" Margin="0,0,0,15"/>
+                                             Foreground="#212121" Margin="0,0,0,15"/>
 
                                         <ItemsControl ItemsSource="{Binding DataContext.TeacherStats, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <Border BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
-                                Padding="16" Margin="0,0,12,12" Width="280" Background="White">
+                                                        Padding="16" Margin="0,0,12,12" Width="280" Background="White">
                                                         <StackPanel>
                                                             <TextBlock Text="{Binding TeacherName}" FontSize="15" FontWeight="SemiBold" Foreground="#212121"/>
                                                             <TextBlock Text="{Binding Subject, StringFormat='Предмет: {0}'}" FontSize="12" 
@@ -303,7 +298,6 @@
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
 
-                                    <!-- Поиск по email -->
                                     <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Padding="16">
                                         <StackPanel>
                                             <TextBlock Text="Поиск учителя по Email" FontWeight="SemiBold" Margin="0,0,0,10"/>
@@ -324,7 +318,6 @@
                                         </StackPanel>
                                     </Border>
 
-                                    <!-- Результаты поиска -->
                                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" MaxHeight="200" Margin="0,16,0,0">
                                         <ItemsControl ItemsSource="{Binding DataContext.SearchResults, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
                                             <ItemsControl.ItemTemplate>
@@ -358,7 +351,6 @@
                                         </ItemsControl>
                                     </ScrollViewer>
 
-                                    <!-- Все учителя -->
                                     <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" MaxHeight="250" Margin="0,16,0,0">
                                         <StackPanel>
                                             <TextBlock Text="Все учителя в системе" FontWeight="SemiBold" Margin="0,0,0,10"/>
@@ -373,7 +365,6 @@
                                         </StackPanel>
                                     </ScrollViewer>
 
-                                    <!-- Мои учителя -->
                                     <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" Margin="0,16,0,0">
                                         <StackPanel>
                                             <TextBlock Text="Прикреплённые учителя" FontWeight="SemiBold" Margin="0,0,0,10"/>

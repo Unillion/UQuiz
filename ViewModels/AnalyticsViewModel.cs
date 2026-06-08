@@ -62,7 +62,6 @@ namespace UQuiz.ViewModels
                 PlotAreaBorderThickness = new OxyThickness(0)
             };
 
-            // Горизонтальные столбцы
             var barSeries = new BarSeries
             {
                 FillColor = OxyColor.FromRgb(63, 81, 181),
@@ -81,7 +80,6 @@ namespace UQuiz.ViewModels
 
             model.Series.Add(barSeries);
 
-            // Ось Y (категории) — вопросы
             model.Axes.Add(new CategoryAxis
             {
                 Position = AxisPosition.Left,
@@ -90,7 +88,6 @@ namespace UQuiz.ViewModels
             });
             ((CategoryAxis)model.Axes[0]).Labels.AddRange(labels);
 
-            // Ось X (значения) — баллы
             model.Axes.Add(new LinearAxis
             {
                 Position = AxisPosition.Bottom,
@@ -156,11 +153,11 @@ namespace UQuiz.ViewModels
 
             var colors = new[]
             {
-                OxyColor.FromRgb(76, 175, 80),   // Отлично - зелёный
-                OxyColor.FromRgb(139, 195, 74),  // Хорошо - светло-зелёный
-                OxyColor.FromRgb(255, 193, 7),   // Удовл. - жёлтый
-                OxyColor.FromRgb(255, 152, 0),   // Неуд. - оранжевый
-                OxyColor.FromRgb(244, 67, 54)    // Плохо - красный
+                OxyColor.FromRgb(76, 175, 80),
+                OxyColor.FromRgb(139, 195, 74),
+                OxyColor.FromRgb(255, 193, 7),
+                OxyColor.FromRgb(255, 152, 0),
+                OxyColor.FromRgb(244, 67, 54)
             };
 
             var pieSeries = new PieSeries
@@ -174,7 +171,7 @@ namespace UQuiz.ViewModels
             };
 
             var total = Analytics.ScoreDistribution.Sum(d => d.Count);
-            if (total == 0) total = 1; // Избегаем деления на 0
+            if (total == 0) total = 1;
 
             for (int i = 0; i < Analytics.ScoreDistribution.Count; i++)
             {

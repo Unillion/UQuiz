@@ -162,7 +162,6 @@ namespace UQuiz.ViewModels
             {
                 MessageBox.Show($"Начинаем опрос: {SelectedSurvey.Title}",
                     "Опрос", MessageBoxButton.OK, MessageBoxImage.Information);
-                // Здесь будет открытие окна прохождения опроса
             }
         }
 

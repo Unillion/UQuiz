@@ -102,7 +102,6 @@
                     <Style TargetType="Border">
                         <Setter Property="Cursor" Value="Hand"/>
                         <Style.Triggers>
-                            <!-- Если есть результат (пройден) — курсор обычный, клик не сработает -->
                             <DataTrigger Binding="{Binding Score, Converter={StaticResource StringToVisibilityConverter}}" Value="Visible">
                                 <Setter Property="Cursor" Value="Arrow"/>
                             </DataTrigger>

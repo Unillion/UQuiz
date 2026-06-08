@@ -59,7 +59,6 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- Заголовок -->
             <Border Grid.Row="0" Background="{StaticResource PrimaryBrush}" CornerRadius="8 8 0 0"
                     MouseLeftButtonDown="Border_MouseLeftButtonDown">
                 <Grid>
@@ -73,7 +72,6 @@
                 </Grid>
             </Border>
 
-            <!-- Контент -->
             <Grid Grid.Row="1" Margin="20">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -83,20 +81,17 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- Название -->
                 <TextBlock Text="Название опроса" FontWeight="SemiBold" Margin="0,0,0,5"/>
                 <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" 
                          Height="32" Padding="10,6" Margin="0,0,0,15"
                          BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"/>
 
-                <!-- Описание -->
                 <TextBlock Grid.Row="1" Text="Описание" FontWeight="SemiBold" Margin="0,0,0,5"/>
                 <TextBox Grid.Row="1" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" 
                          Height="60" Padding="10,6" Margin="0,0,0,15"
                          BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
                          TextWrapping="Wrap" AcceptsReturn="True"/>
 
-                <!-- Кнопка добавления вопроса -->
                 <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,10">
                     <Button Content="+ Добавить вопрос" Width="140" Height="36"
                             Background="{StaticResource PrimaryBrush}" Foreground="White" BorderThickness="0"
@@ -109,7 +104,6 @@
                     </Button>
                 </StackPanel>
 
-                <!-- Список вопросов -->
                 <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto">
                     <ItemsControl ItemsSource="{Binding Questions}">
                         <ItemsControl.ItemTemplate>
@@ -117,7 +111,6 @@
                                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" 
                                         CornerRadius="6" Padding="15" Margin="0,0,0,10" Background="White">
                                     <StackPanel>
-                                        <!-- Заголовок вопроса -->
                                         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                             <TextBlock Text="{Binding OrderNumber, StringFormat='Вопрос {0}'}" 
                                                        FontWeight="SemiBold" FontSize="14" Margin="0,0,15,0"/>
@@ -133,13 +126,11 @@
                                             </Button>
                                         </StackPanel>
 
-                                        <!-- Текст вопроса -->
                                         <TextBlock Text="Текст вопроса" FontSize="12" Foreground="#616161" Margin="0,0,0,5"/>
                                         <TextBox Text="{Binding QuestionText, UpdateSourceTrigger=PropertyChanged}" 
                                                  Height="32" Padding="10,6" Margin="0,0,0,10"
                                                  BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"/>
 
-                                        <!-- Тип вопроса и баллы -->
                                         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                             <StackPanel Width="200" Margin="0,0,15,0">
                                                 <TextBlock Text="Тип вопроса" FontSize="12" Foreground="#616161"/>
@@ -157,7 +148,6 @@
                                             </StackPanel>
                                         </StackPanel>
 
-                                        <!-- Варианты ответов -->
                                         <StackPanel Visibility="{Binding HasOptions, Converter={StaticResource BoolToVisibilityConverter}}">
                                             <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                                                 <TextBlock Text="Варианты ответов" FontWeight="SemiBold"/>

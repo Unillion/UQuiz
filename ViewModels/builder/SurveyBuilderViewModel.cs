@@ -225,7 +225,6 @@ namespace UQuiz.ViewModels
                     surveyData.Questions.Add(questionData);
                 }
 
-                // ТОЛЬКО ОДИН ВЫЗОВ:
                 if (_surveyId > 0)
                     _surveyService.UpdateSurvey(surveyData);
                 else

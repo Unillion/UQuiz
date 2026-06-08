@@ -155,7 +155,6 @@ namespace UQuiz.ViewModels
 
             if (!string.IsNullOrWhiteSpace(SearchEmail))
             {
-                // Поиск по email среди всех учителей
                 foreach (var teacher in AllTeachers)
                 {
                     if (teacher.Email.ToLower().Contains(SearchEmail.ToLower()))
@@ -171,7 +170,6 @@ namespace UQuiz.ViewModels
             }
             else
             {
-                // Если поле пустое - показываем всех
                 foreach (var teacher in AllTeachers)
                 {
                     SearchResults.Add(teacher);

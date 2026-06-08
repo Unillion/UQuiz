@@ -24,7 +24,6 @@ namespace UQuiz.services
                     string passwordHash = HashPassword(password);
                     string login = email.Split('@')[0];
 
-                    // Преобразуем UserType в строку для БД
                     string dbUserType;
                     switch (userType)
                     {
@@ -95,7 +94,6 @@ namespace UQuiz.services
             {
                 string passwordHash = HashPassword(password);
 
-                // Преобразуем UserType в строку для БД
                 string dbUserType;
                 switch (userType)
                 {
@@ -103,7 +101,7 @@ namespace UQuiz.services
                         dbUserType = "Teacher";
                         break;
                     case UserType.RegularUser:
-                        dbUserType = "Student";  // ← Вот исправление
+                        dbUserType = "Student";
                         break;
                     case UserType.Organization:
                         dbUserType = "Organization";
@@ -332,7 +330,6 @@ namespace UQuiz.services
         {
             using (var context = new AppDbContext())
             {
-                // Проверяем, нет ли уже активной заявки
                 var existing = context.ConnectionRequests
                     .FirstOrDefault(cr => cr.FromUserId == organizationId
                                        && cr.ToUserId == teacherId
@@ -342,7 +339,6 @@ namespace UQuiz.services
                 if (existing != null)
                     throw new Exception("Заявка этому учителю уже отправлена");
 
-                // Проверяем, не прикреплён ли уже учитель
                 var alreadyAttached = context.TeacherOrganizations
                     .Any(to => to.OrganizationId == organizationId && to.TeacherId == teacherId);
 
@@ -481,7 +477,6 @@ namespace UQuiz.services
                     request.Status = "Accepted";
                     request.ProcessedDate = DateTime.Now;
 
-                    // Создаём связь учитель-организация
                     var teacherOrg = new TeacherOrganizationEntity
                     {
                         TeacherId = request.ToUserId,

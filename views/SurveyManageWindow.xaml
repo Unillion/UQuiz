@@ -234,7 +234,6 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <!-- Список учеников -->
                                     <Border Grid.Column="0" BorderBrush="#E0E0E0" BorderThickness="0,0,1,0" Background="White">
                                         <ScrollViewer VerticalScrollBarVisibility="Auto">
                                             <StackPanel>
@@ -263,7 +262,6 @@
                                         </ScrollViewer>
                                     </Border>
 
-                                    <!-- Детали ответа -->
                                     <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
                                         <Border Padding="20">
                                             <StackPanel>
@@ -282,13 +280,11 @@
                                                                     <TextBlock Text="{Binding QuestionText}" FontWeight="SemiBold" Margin="0,0,0,10" TextWrapping="Wrap"/>
                                                                     <TextBlock Text="{Binding Points, StringFormat='Макс. балл: {0}'}" FontSize="12" Foreground="#FF9800"/>
 
-                                                                    <!-- Текстовый ответ -->
                                                                     <Border Background="#F5F5F5" Padding="10" CornerRadius="4" Margin="0,8,0,0"
                                                 Visibility="{Binding StudentAnswer, Converter={StaticResource StringToVisibilityConverter}}">
                                                                         <TextBlock Text="{Binding StudentAnswer}" TextWrapping="Wrap"/>
                                                                     </Border>
 
-                                                                    <!-- Выбранные варианты -->
                                                                     <ItemsControl ItemsSource="{Binding SelectedOptionTexts}" Margin="0,5,0,0">
                                                                         <ItemsControl.ItemTemplate>
                                                                             <DataTemplate>
@@ -296,7 +292,6 @@
                                                                             </DataTemplate>
                                                                         </ItemsControl.ItemTemplate>
                                                                     </ItemsControl>
-                                                                    <!-- Правильные ответы (для автопроверки) -->
                                                                     <Border Background="#E8F5E9" Padding="10" CornerRadius="4" Margin="0,8,0,0"
         Visibility="{Binding IsAutoChecked, Converter={StaticResource BoolToVisibilityConverter}}">
                                                                         <StackPanel>
@@ -312,7 +307,6 @@
                    FontWeight="SemiBold" Foreground="#2E7D32" Margin="0,5,0,0"/>
                                                                         </StackPanel>
                                                                     </Border>
-                                                                    <!-- Оценка -->
                                                                     <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                                                                         <TextBlock Text="Баллы:" VerticalAlignment="Center" Margin="0,0,10,0"/>
                                                                         <TextBox Text="{Binding Score, UpdateSourceTrigger=PropertyChanged}" 

@@ -31,7 +31,7 @@ namespace UQuiz.ViewModels
             CloseCommand = new RelayCommand(ExecuteClose);
 
             SelectedUserType = UserType.Teacher;
-            Email = "teacher@uquiz.edu";
+            Email = "ivanov@gmail.com";
             Password = "12345678";
         }
 

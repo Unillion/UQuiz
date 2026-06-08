@@ -131,7 +131,7 @@ namespace UQuiz.services
                         ResponseId = response.Id,
                         QuestionId = answer.QuestionId,
                         AnswerText = answer.TextAnswer ?? "",
-                        Score = null  // Без автопроверки — null, учитель поставит сам
+                        Score = null 
                     };
 
                     context.Answers.Add(answerEntity);
@@ -151,7 +151,6 @@ namespace UQuiz.services
                     }
                 }
 
-                // TotalScore пока null — учитель ещё не проверил
                 response.TotalScore = null;
                 context.SaveChanges();
 
@@ -264,7 +263,6 @@ namespace UQuiz.services
                 survey.Title = surveyData.Title;
                 survey.Description = surveyData.Description;
 
-                // Удаляем старые вопросы и варианты
                 var oldQuestions = context.Questions.Where(q => q.SurveyId == surveyData.Id).ToList();
                 foreach (var q in oldQuestions)
                 {
@@ -274,7 +272,6 @@ namespace UQuiz.services
                 context.Questions.RemoveRange(oldQuestions);
                 context.SaveChanges();
 
-                // Добавляем новые вопросы
                 foreach (var q in surveyData.Questions)
                 {
                     var questionEntity = new QuestionEntity
@@ -670,7 +667,6 @@ namespace UQuiz.services
                     ScoreDistribution = new List<ScoreDistribution>()
                 };
 
-                // Статистика по вопросам
                 foreach (var q in questions)
                 {
                     var answers = context.Answers.Where(a => a.QuestionId == q.Id).ToList();
@@ -685,7 +681,6 @@ namespace UQuiz.services
                     });
                 }
 
-                // Распределение оценок
                 if (analytics.MaxScore > 0)
                 {
                     var maxScore = analytics.MaxScore;
@@ -739,25 +734,21 @@ namespace UQuiz.services
         {
             using (var context = new AppDbContext())
             {
-                // Получаем всех учителей организации
                 var teacherIds = context.TeacherOrganizations
                     .Where(to => to.OrganizationId == organizationId)
                     .Select(to => to.TeacherId)
                     .ToList();
 
-                // ВСЕ опросы этих учителей (не только в этой организации)
                 var allSurveys = context.Surveys
                     .Where(s => teacherIds.Contains(s.TeacherId))
                     .ToList();
 
                 var surveyIds = allSurveys.Select(s => s.Id).ToList();
 
-                // Все ответы на эти опросы
                 var allResponses = context.SurveyResponses
                     .Where(r => surveyIds.Contains(r.SurveyId))
                     .ToList();
 
-                // Все назначения учеников
                 var allAssignments = context.SurveyAssignments
                     .Where(sa => surveyIds.Contains(sa.SurveyId))
                     .ToList();
@@ -777,16 +768,13 @@ namespace UQuiz.services
                 {
                     var teacher = context.Users.Find(teacherId);
 
-                    // Все опросы этого учителя
                     var teacherSurveys = allSurveys.Where(s => s.TeacherId == teacherId).ToList();
                     var teacherSurveyIds = teacherSurveys.Select(s => s.Id).ToList();
 
-                    // Ответы на опросы этого учителя
                     var teacherResponses = allResponses
                         .Where(r => teacherSurveyIds.Contains(r.SurveyId))
                         .ToList();
 
-                    // Ученики этого учителя в этой организации
                     var teacherStudents = context.TeacherStudents
                         .Count(ts => ts.TeacherId == teacherId && ts.OrganizationId == organizationId);
 
@@ -818,14 +806,12 @@ namespace UQuiz.services
             {
                 var surveys = context.Surveys.Where(s => s.TeacherId == teacherId).ToList();
 
-                // Выносим Id в примитивный список
                 var surveyIds = surveys.Select(s => s.Id).ToList();
 
                 var allResponses = context.SurveyResponses
                     .Where(r => surveyIds.Contains(r.SurveyId))
                     .ToList();
 
-                // Собираем уникальных учеников через назначения
                 var totalStudents = context.SurveyAssignments
                     .Where(sa => surveyIds.Contains(sa.SurveyId))
                     .Select(sa => sa.StudentId)

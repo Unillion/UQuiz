@@ -53,7 +53,6 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- Заголовок -->
             <Border Grid.Row="0" Background="{StaticResource PrimaryBrush}" CornerRadius="8 8 0 0"
                     MouseLeftButtonDown="Border_MouseLeftButtonDown">
                 <Grid>
@@ -62,7 +61,6 @@
                 </Grid>
             </Border>
 
-            <!-- Информация об опросе -->
             <Border Grid.Row="1" Background="White" Padding="20" Margin="0,0,0,1">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -76,11 +74,9 @@
                 </Grid>
             </Border>
 
-            <!-- Вопрос -->
             <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
                 <Border Padding="30" MinHeight="300">
                     <StackPanel>
-                        <!-- Номер и баллы -->
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
                             <TextBlock Text="{Binding CurrentQuestion.OrderNumber, StringFormat='Вопрос {0}'}" 
                                        FontSize="20" FontWeight="SemiBold" Foreground="#212121"/>
@@ -88,18 +84,14 @@
                                        FontSize="14" Foreground="#FF9800" VerticalAlignment="Bottom" Margin="5,0,0,0"/>
                         </StackPanel>
 
-                        <!-- Текст вопроса -->
                         <TextBlock Text="{Binding CurrentQuestion.QuestionText}" FontSize="16" 
                                    Foreground="#424242" Margin="0,0,0,25" TextWrapping="Wrap"/>
 
-                        <!-- Текстовый ответ -->
                         <TextBox Text="{Binding CurrentQuestion.TextAnswer, UpdateSourceTrigger=PropertyChanged}" 
                                  Height="150" Padding="15,10" Margin="0,0,0,20"
                                  BorderBrush="#E0E0E0" BorderThickness="1" TextWrapping="Wrap" AcceptsReturn="True"
                                  Visibility="{Binding CurrentQuestion.IsText, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
-                        <!-- Варианты ответов -->
-                        <!-- Варианты ответов -->
                         <ContentControl Visibility="{Binding CurrentQuestion.IsChoice, Converter={StaticResource BoolToVisibilityConverter}}">
                             <ContentControl.Style>
                                 <Style TargetType="ContentControl">
