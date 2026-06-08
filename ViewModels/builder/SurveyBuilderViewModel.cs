@@ -22,12 +22,14 @@ namespace UQuiz.ViewModels
         private ObservableCollection<QuestionViewModel> _questions;
         private QuestionViewModel _selectedQuestion;
         private int _surveyId;
+        private bool _isSaving;
 
         public SurveyBuilderViewModel(Teacher teacher, int surveyId = 0)
         {
             _teacher = teacher;
             _userService = new UserService();
             _surveyService = new SurveyService();
+            _surveyId = surveyId;
 
             Questions = new ObservableCollection<QuestionViewModel>();
 
@@ -152,20 +154,22 @@ namespace UQuiz.ViewModels
 
         private bool CanExecuteSaveSurvey(object parameter)
         {
-            return !string.IsNullOrWhiteSpace(Title) && Questions.Count > 0;
+            return !string.IsNullOrWhiteSpace(Title) && Questions.Count > 0 && !_isSaving;
         }
+
 
         private void ExecuteSaveSurvey(object parameter)
         {
+            if (_isSaving) return;
+            _isSaving = true;
+
             try
             {
                 var organizations = _userService.GetTeacherOrganizations(_teacher.Id);
                 int organizationId;
-                System.Diagnostics.Debug.WriteLine($"Сохраняю опрос: _surveyId={_surveyId}");
 
                 if (organizations.Count == 0)
                 {
-                    // Если нет организаций, используем 0 или создаём "Личную" организацию
                     var result = MessageBox.Show(
                         "У вас нет привязанных организаций. Создать опрос в личном кабинете?",
                         "Нет организаций",
@@ -175,7 +179,7 @@ namespace UQuiz.ViewModels
                     if (result == MessageBoxResult.No)
                         return;
 
-                    organizationId = 0; // 0 означает личный опрос учителя
+                    organizationId = 0;
                 }
                 else if (organizations.Count == 1)
                 {
@@ -183,7 +187,6 @@ namespace UQuiz.ViewModels
                 }
                 else
                 {
-                    // Если несколько организаций - пока берём первую (потом можно сделать выбор)
                     organizationId = organizations.First().Id;
                 }
 
@@ -210,8 +213,6 @@ namespace UQuiz.ViewModels
 
                     foreach (var opt in q.Options)
                     {
-                        System.Diagnostics.Debug.WriteLine($"Отправляю в SaveSurvey: {opt.OptionText}, IsCorrect={opt.IsCorrect}");
-
                         questionData.Options.Add(new OptionData
                         {
                             OrderNumber = opt.OrderNumber,
@@ -224,20 +225,11 @@ namespace UQuiz.ViewModels
                     surveyData.Questions.Add(questionData);
                 }
 
-                _surveyService.SaveSurvey(surveyData);
-
+                // ТОЛЬКО ОДИН ВЫЗОВ:
                 if (_surveyId > 0)
-                {
                     _surveyService.UpdateSurvey(surveyData);
-                    System.Diagnostics.Debug.WriteLine("Вызов UpdateSurvey");
-                    _surveyService.UpdateSurvey(surveyData);
-                }
                 else
-                {
                     _surveyService.SaveSurvey(surveyData);
-                    System.Diagnostics.Debug.WriteLine("Вызов SaveSurvey (новый)");
-                    _surveyService.SaveSurvey(surveyData);
-                }
 
                 MessageBox.Show($"Опрос \"{Title}\" сохранён!", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
 
@@ -249,10 +241,11 @@ namespace UQuiz.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка сохранения: {ex.Message}", "Ошибка",
-                              MessageBoxButton.OK, MessageBoxImage.Error);
-
-                Console.WriteLine(ex.ToString());
+                MessageBox.Show($"Ошибка сохранения: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                _isSaving = false;
             }
         }
 

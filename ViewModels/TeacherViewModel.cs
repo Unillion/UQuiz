@@ -227,28 +227,43 @@ namespace UQuiz.ViewModels
 
         private void LoadSurveys()
         {
-            if (Surveys == null)
-                Surveys = new ObservableCollection<SurveyCardViewModel>();
-            else
-                Surveys.Clear();
-
-            var surveys = _surveyService.GetSurveysByTeacher(_teacher.Id);
-            foreach (var s in surveys)
+            try
             {
-                Surveys.Add(new SurveyCardViewModel
+                if (Surveys == null)
+                    Surveys = new ObservableCollection<SurveyCardViewModel>();
+                else
+                    Surveys.Clear();
+
+                var surveys = _surveyService.GetSurveysByTeacher(_teacher.Id);
+                foreach (var s in surveys)
                 {
-                    Id = s.Id,
-                    Title = s.Title,
-                    Description = s.Description,
-                    QuestionsCount = s.QuestionsCount,
-                    AssignedCount = s.AssignedCount,
-                    CompletedCount = s.CompletedCount,
-                    CompletedCountDisplay = $"{s.CompletedCount}/{s.AssignedCount}",
-                    CreatedDate = s.CreatedDate.ToString("dd.MM.yyyy"),
-                    IsSent = s.IsSent
-                });
+                    Surveys.Add(new SurveyCardViewModel
+                    {
+                        Id = s.Id,
+                        Title = s.Title,
+                        Description = s.Description,
+                        QuestionsCount = s.QuestionsCount,
+                        AssignedCount = s.AssignedCount,
+                        CompletedCount = s.CompletedCount,
+                        CompletedCountDisplay = $"{s.CompletedCount}/{s.AssignedCount}",
+                        CreatedDate = s.CreatedDate.ToString("dd.MM.yyyy"),
+                        IsSent = s.IsSent
+                    });
+                }
+                OnPropertyChanged(nameof(Surveys));
             }
-            OnPropertyChanged(nameof(Surveys));
+            catch (Exception ex)
+            {
+                string error = ex.Message;
+                Exception inner = ex.InnerException;
+                while (inner != null)
+                {
+                    error += "\n" + inner.Message;
+                    inner = inner.InnerException;
+                }
+                MessageBox.Show($"Ошибка загрузки опросов:\n{error}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+
+            }
         }
 
         private void ExecuteDeleteSurvey(object parameter)

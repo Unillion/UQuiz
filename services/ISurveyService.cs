@@ -69,7 +69,7 @@ namespace UQuiz.services
         public string Score { get; set; }
         public int AssignedCount { get; set; }
         public int CompletedCount { get; set; }
-
+        public decimal MaxScore { get; set; }
         public bool IsSent { get; set; }
     }
     public class SurveyDetail

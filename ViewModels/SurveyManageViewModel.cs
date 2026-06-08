@@ -348,7 +348,10 @@ namespace UQuiz.ViewModels
                 }
                 _surveyService.UpdateResponseTotalScore(SelectedResponseDetail.ResponseId);
 
-                CheckMessage = "Оценки сохранены!";
+                CheckMessage = "Оценки сохранены и отправлены ученику!";
+                MessageBox.Show("Оценки сохранены. Ученик увидит результаты.", "Успех",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+
                 LoadStudentResponses();
                 SelectedResponseDetail = _surveyService.GetStudentResponseDetail(SelectedResponseDetail.ResponseId);
             }

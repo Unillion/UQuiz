@@ -19,7 +19,6 @@
     </Window.DataContext>
 
     <Window.Resources>
-        <!-- Конвертеры -->
         <converters:UserTypeToBoolConverter x:Key="UserTypeToBoolConverter"/>
         <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
 
@@ -123,14 +122,13 @@
                             </Button.Resources>
                         </Button>
 
-                        <!-- Индикатор ошибки -->
                         <TextBlock Text="{Binding ErrorMessage}" Foreground="#E53935" 
                             FontSize="12" Margin="0,10,0,0" TextWrapping="Wrap"
                             Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"/>
 
                         <TextBlock TextAlignment="Center" Margin="0,20,0,0">
                             <Hyperlink Command="{Binding RegisterCommand}"
-                                CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
+ CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
                                 Нет аккаунта? Зарегистрироваться</Hyperlink>
                         </TextBlock>
                     </StackPanel>

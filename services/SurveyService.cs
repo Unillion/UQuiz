@@ -121,8 +121,6 @@ namespace UQuiz.services
                 context.SurveyResponses.Add(response);
                 context.SaveChanges();
 
-                decimal totalScore = 0;
-
                 foreach (var answer in answers)
                 {
                     var question = context.Questions.Find(answer.QuestionId);
@@ -132,69 +130,9 @@ namespace UQuiz.services
                     {
                         ResponseId = response.Id,
                         QuestionId = answer.QuestionId,
-                        AnswerText = answer.TextAnswer ?? ""
+                        AnswerText = answer.TextAnswer ?? "",
+                        Score = null  // Без автопроверки — null, учитель поставит сам
                     };
-
-                    if (question.QuestionType == "SingleChoice" || question.QuestionType == "MultipleChoice")
-                    {
-                        var allOptions = context.AnswerOptions
-                            .Where(o => o.QuestionId == question.Id)
-                            .ToList();
-
-                        var correctOptionIds = allOptions
-                            .Where(o => o.IsCorrect)
-                            .Select(o => o.Id)
-                            .ToList();
-
-                        var selectedOptionIds = answer.SelectedOptionIds ?? new List<int>();
-
-                        System.Diagnostics.Debug.WriteLine($"=== Вопрос {question.Id}: {question.QuestionText} ===");
-                        System.Diagnostics.Debug.WriteLine($"Тип: {question.QuestionType}, Баллы: {question.Points}");
-                        System.Diagnostics.Debug.WriteLine($"Всего вариантов: {allOptions.Count}");
-                        foreach (var opt in allOptions)
-                            System.Diagnostics.Debug.WriteLine($"  Option {opt.Id}: '{opt.OptionText}' IsCorrect={opt.IsCorrect}");
-                        System.Diagnostics.Debug.WriteLine($"Правильных ID: [{string.Join(",", correctOptionIds)}]");
-                        System.Diagnostics.Debug.WriteLine($"Выбрано ID: [{string.Join(",", selectedOptionIds)}]");
-
-                        decimal score = 0;
-
-                        if (question.QuestionType == "SingleChoice")
-                        {
-                            if (selectedOptionIds.Count == 1 && correctOptionIds.Contains(selectedOptionIds[0]))
-                            {
-                                score = question.Points;
-                                System.Diagnostics.Debug.WriteLine($"SingleChoice: ПРАВИЛЬНО! Баллы: {score}");
-                            }
-                            else
-                            {
-                                System.Diagnostics.Debug.WriteLine($"SingleChoice: НЕПРАВИЛЬНО. Баллы: 0");
-                            }
-                        }
-                        else if (question.QuestionType == "MultipleChoice")
-                        {
-                            bool allCorrectSelected = correctOptionIds.Count > 0 &&
-                                                      correctOptionIds.All(c => selectedOptionIds.Contains(c));
-                            bool noIncorrectSelected = selectedOptionIds.All(s => correctOptionIds.Contains(s));
-
-                            if (allCorrectSelected && noIncorrectSelected)
-                            {
-                                score = question.Points;
-                                System.Diagnostics.Debug.WriteLine($"MultipleChoice: ВСЁ ПРАВИЛЬНО! Баллы: {score}");
-                            }
-                            else if (selectedOptionIds.Any(s => correctOptionIds.Contains(s)))
-                            {
-                                score = question.Points / 2;
-                                System.Diagnostics.Debug.WriteLine($"MultipleChoice: ЧАСТИЧНО ПРАВИЛЬНО. Баллы: {score}");
-                            }
-                            else
-                            {
-                                System.Diagnostics.Debug.WriteLine($"MultipleChoice: НЕПРАВИЛЬНО. Баллы: 0");
-                            }
-                        }
-
-                        answerEntity.Score = score;
-                        totalScore += score;
-                    }
 
                     context.Answers.Add(answerEntity);
                     context.SaveChanges();
@@ -213,7 +151,8 @@ namespace UQuiz.services
                     }
                 }
 
-                response.TotalScore = totalScore;
+                // TotalScore пока null — учитель ещё не проверил
+                response.TotalScore = null;
                 context.SaveChanges();
 
                 var assignment = context.SurveyAssignments
@@ -223,8 +162,6 @@ namespace UQuiz.services
                     assignment.IsCompleted = true;
                     context.SaveChanges();
                 }
-
-                System.Diagnostics.Debug.WriteLine($"=== ИТОГО: {totalScore} баллов ===");
             }
         }
 
@@ -571,7 +508,7 @@ namespace UQuiz.services
                                   TeacherName = u.FullName ?? u.Login,
                                   QuestionsCount = context.Questions.Count(q => q.SurveyId == s.Id),
                                   MaxScore = context.Questions.Where(q => q.SurveyId == s.Id).Sum(q => q.Points),
-                                  Score = sr != null ? sr.TotalScore : null
+                                  TotalScore = sr != null ? sr.TotalScore : null
                               };
 
                 var result = new List<Survey>();
@@ -585,7 +522,7 @@ namespace UQuiz.services
                         CreatedDate = s.CreatedDate,
                         TeacherName = s.TeacherName,
                         QuestionsCount = s.QuestionsCount,
-                        Score = s.Score.HasValue ? $"{s.Score}/{s.MaxScore}" : null
+                        Score = s.TotalScore.HasValue ? $"{s.TotalScore}/{s.MaxScore}" : "Ожидает проверки"
                     });
                 }
                 return result;

@@ -16,7 +16,6 @@ namespace UQuiz.data.entities
         public DateTime CreatedDate { get; set; }
         public bool IsActive { get; set; }
         public int? TimeLimit { get; set; }
-
         public virtual TeacherEntity Teacher { get; set; }
         public virtual OrganizationEntity Organization { get; set; }
         public virtual ICollection<QuestionEntity> Questions { get; set; }
